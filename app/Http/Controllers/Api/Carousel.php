@@ -1,0 +1,117 @@
+<?php
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
+class Carousel extends Controller
+{
+    protected $data;
+    public function __construct()
+    {
+        $this->data = new \App\Models\Carousel();
+    }
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $data = $this->data::all();
+        return response()->json([
+            "msg"  => "success",
+            "data" => $data,
+        ], 200);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $nama_file = $request->nama_file;
+        $type_file = $request->type_file;
+        $slug      = Str::slug($nama_file);
+
+        $dataUpload = [
+            "nama_file" => $nama_file,
+            "type_file" => $type_file,
+            "slug"      => $slug,
+
+        ];
+        if ($request->has('file')) {
+                        $file = $request->file;
+
+            $namaFile = Str::slug($nama_file) . "-carousel-" . date("dmY") . "-" . time() . "." . $request->file->getClientOriginalExtension();
+                $file->storeAs('image/carousel',$namaFile,'public');
+            $dataUpload["ext"]  = $request->file->getClientOriginalExtension();
+            $dataUpload["size"] = $request->file->getSize() / 1048576.2;
+            $dataUpload["file"] = $namaFile;
+        }
+        $res = $this->data::create($dataUpload);
+        if (! $res) {
+            return response()->json([
+                "msg" => "failed",
+            ], 404);
+        }
+        return response()->json([
+            "msg" => "Success",
+        ], 201);
+
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $slug)
+    {
+        $data = $this->data::where("slug", $slug)->first();
+        return response()->json([
+            "msg"  => "success",
+            "data" => $data,
+        ], 200);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $data            = $this->data::where("slug", $request->slug)->first();
+        $data->nama_file = $request->nama_file;
+        $data->type_file = $request->type_file;
+        if ($request->hasFile("file")) {
+            $exists = Storage::disk('public')->exists("{$data->file}");
+            if ($exists) {
+                Storage::disk('public')->delete("{$data->file}");
+            }
+            $namaFile = Str::slug($data->file) . "" . date("dmY") . "-" . time() . "." . $request->file->getClientOriginalExtension();
+            Storage::disk('public')->put($namaFile, file_get_contents($request->file));
+            $data->file = $namaFile;
+            $data->ext  = $request->file->getClientOriginalExtension();
+            $data->size = number_format($request->file->getSize() / 1048576.2,2);
+        }
+        $data->slug     = Str::slug($data->nama_file);
+        $data->is_shown = $request->is_shown;
+        $data->save();
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $slug)
+    {
+        $data = $this->data::where('slug', '=', $slug)->first();
+        // return response()->json(["data"=>$request->json("nama_barang")]);
+        if ($data->file) {
+            $exists = Storage::disk('public')->exists("{$data->file}");
+            if ($exists) {
+                Storage::disk('public')->delete("{$data->file}");
+            }
+        }
+        $data->delete();
+        return response()->json(["msg" => "Data Berhasil Dihapus"],201);
+    }
+}
