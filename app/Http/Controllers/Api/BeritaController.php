@@ -3,49 +3,54 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\Saham;
+use App\Models\Berita;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class StaticContentController extends Controller
+class BeritaController extends Controller
 {
     protected $data;
-    public function __construct(){
-        $this->data = new Saham();
+    public function __construct()
+    {
+        $this->data = new Berita();
     }
-    public function index(){
+    public function index()
+    {
         $res = $this->data::all();
         return response()->json([
-            "msg"=>"Success",
-            "data"=>$res
-        ],200);
-
+            "msg" => "Success",
+            "data" => $res
+        ], 200);
     }
     public function store(Request $request)
     {
         $nama = $request->nama;
-        $warna = $request->warna;
-        $jumlah_saham = $request->jumlah_saham;
-        $jumlah = $request->jumlah;
-        $kepemilikan = $request->kepemilikan;
+        $deskripsi = $request->deskripsi;
+        $published_on = $request->published_on;
+
         $slug      = Str::slug($nama);
         $dataUpload = [
             "nama" => $nama,
-            "jumlah_saham" => $jumlah_saham,
-            "jumlah" => $jumlah,
-            "kepemilikan" => $kepemilikan,
-            "warna"      => $warna,
+            "deskripsi"      => $deskripsi,
+            "published_on"      => $published_on,
             "slug"      => $slug,
         ];
 
-        // if ($request->file('gambar_first')) {
-        //     $file = $request->file('gambar_first');
-        //     $namaFile = Str::slug($nama_golongan)."gambar-1" . "-" . time() . "." . $request->gambar_first->getClientOriginalExtension();
-        //     // Storage::disk('public')->put($namaFile, file_get_contents($request->file));
-        //     $file->storeAs('image/tarif',$namaFile,'public');
-        //     $dataUpload["gambar_first"] = $namaFile;
-        // }
+        if ($request->file('cover')) {
+            $file = $request->file('cover');
+            $namaFile = Str::slug($nama) . "gambar-1" . "-" . time() . "." . $request->cover->getClientOriginalExtension();
+            // Storage::disk('public')->put($namaFile, file_get_contents($request->file));
+            $file->storeAs('image/berita', $namaFile, 'public');
+            $dataUpload["cover"] = $namaFile;
+        }
+        if ($request->file('gambar_kedua')) {
+            $file = $request->file('gambar_kedua');
+            $namaFile = Str::slug($nama) . "gambar-2" . "-" . time() . "." . $request->gambar_kedua->getClientOriginalExtension();
+            // Storage::disk('public')->put($namaFile, file_get_contents($request->file));
+            $file->storeAs('image/berita', $namaFile, 'public');
+            $dataUpload["gambar_kedua"] = $namaFile;
+        }
 
         $res = $this->data::create($dataUpload);
         if (! $res) {
@@ -56,7 +61,6 @@ class StaticContentController extends Controller
         return response()->json([
             "msg" => "Success",
         ], 201);
-
     }
     /**
      * Display the specified resource.
@@ -78,10 +82,7 @@ class StaticContentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-
-    }
+    public function update(Request $request, string $id) {}
 
     /**
      * Remove the specified resource from storage.
@@ -103,7 +104,6 @@ class StaticContentController extends Controller
         }
 
         $data->delete();
-        return response()->json(["msg" => "Data Berhasil Dihapus"],201);
-
+        return response()->json(["msg" => "Data Berhasil Dihapus"], 201);
     }
 }

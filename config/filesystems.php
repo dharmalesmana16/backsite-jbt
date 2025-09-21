@@ -41,7 +41,7 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,
@@ -49,7 +49,23 @@ return [
         'public/image/tarif' => [
             'driver' => 'local',
             'root' => storage_path('app/public/image/tarif'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+        'public/image/berita' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/image/berita'),
+            'url' => env('APP_URL') . '/storage',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+        'public/image/direksi' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/image/direksi'),
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
             'throw' => false,
             'report' => false,

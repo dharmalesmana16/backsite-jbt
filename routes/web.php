@@ -41,9 +41,9 @@ Route::prefix("direksi")->group(function () {
         return Inertia::render('Direksi/Create');
     });
     Route::get('/update/{slug}', function ($slug) {
-         $model = new Direksi();
-        $data = $model::where("slug","=",$slug)->first();
-        return Inertia::render('Direksi/Update',['slug'=>$data]);
+        $model = new Direksi();
+        $data = $model::where("slug", "=", $slug)->first();
+        return Inertia::render('Direksi/Update', ['slug' => $data]);
     });
 });
 Route::prefix("prestasi")->group(function () {
@@ -54,9 +54,9 @@ Route::prefix("prestasi")->group(function () {
         return Inertia::render('Prestasi/Page');
     });
     Route::get('/update/{slug}', function ($slug) {
-             $model = new ModelsPrestasi();
-        $data = $model::where("slug","=",$slug)->first();
-        return Inertia::render('Prestasi/Update',['slug'=>$data]);
+        $model = new ModelsPrestasi();
+        $data = $model::where("slug", "=", $slug)->first();
+        return Inertia::render('Prestasi/Update', ['slug' => $data]);
     });
 });
 Route::prefix("sejarah")->group(function () {
@@ -67,9 +67,9 @@ Route::prefix("sejarah")->group(function () {
         return Inertia::render('Sejarah/Page');
     });
     Route::get('/update/{slug}', function ($slug) {
-             $model = new ModelsPrestasi();
-        $data = $model::where("slug","=",$slug)->first();
-        return Inertia::render('Sejarah/Update',['slug'=>$data]);
+        $model = new ModelsPrestasi();
+        $data = $model::where("slug", "=", $slug)->first();
+        return Inertia::render('Sejarah/Update', ['slug' => $data]);
     });
 });
 Route::prefix("pemegangsaham")->group(function () {
@@ -81,8 +81,21 @@ Route::prefix("pemegangsaham")->group(function () {
     });
     Route::get('/update/{slug}', function ($slug) {
         $model = new Saham();
-        $data = $model::where("slug","=",$slug)->first();
-        return Inertia::render('Saham/Update',['slug'=>$data]);
+        $data = $model::where("slug", "=", $slug)->first();
+        return Inertia::render('Saham/Update', ['slug' => $data]);
+    });
+});
+Route::prefix("berita")->group(function () {
+    Route::get('/create', function () {
+        return Inertia::render('Berita/Create');
+    });
+    Route::get('/', function () {
+        return Inertia::render('Berita/Page');
+    });
+    Route::get('/update/{slug}', function ($slug) {
+        $model = new Saham();
+        $data = $model::where("slug", "=", $slug)->first();
+        return Inertia::render('Berita/Update', ['slug' => $data]);
     });
 });
 
