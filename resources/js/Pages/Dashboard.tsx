@@ -33,6 +33,7 @@ export default function Dashboard({ children }: any) {
     const { data, setData, post, processing, errors, reset } = useForm({
         nama_perusahaan: '',
         alamat_perusahaan: '',
+        email_perusahaan: '',
         logo: '',
         deskripsi: '',
         url_maps: '',
@@ -58,7 +59,7 @@ export default function Dashboard({ children }: any) {
                                         <div className="mt-4  block p-4">
 
                                             <label htmlFor="firstImage">
-                                                <p className='block text-sm text-gray-700 font-bold'>Gambar Direksi</p>
+                                                <p className='block text-sm text-gray-700 font-bold'>Logo Perusahaan</p>
                                                 {previewLogo == null ? (
                                                     <div className="p-20 border-2 border-gray-200 border-dashed cursor-pointer w-25 h-12">
                                                         <p className='text-gray-500 text-lg text-center mx-auto my-auto'>+ Logo</p>
@@ -117,6 +118,22 @@ export default function Dashboard({ children }: any) {
                                             />
 
                                             <InputError message={errors.alamat_perusahaan} className="mt-2" />
+                                        </div>
+                                        <div className="mt-4 block">
+                                            <InputLabel htmlFor="email_perusahaan" value="Email Perusahaan" className='font-bold' />
+                                            <NoteLabel value="Masukkan Alamat Perusahaan" />
+                                            <TextInput
+                                                id="email_perusahaan"
+                                                type="text"
+                                                name="email_perusahaan"
+                                                value={data.email_perusahaan}
+                                                className="mt-1 block w-full"
+                                                autoComplete="username"
+                                                isFocused={true}
+                                                onChange={(e) => setData('email_perusahaan', e.target.value)}
+                                            />
+
+                                            <InputError message={errors.email_perusahaan} className="mt-2" />
                                         </div>
                                         <div className="mt-4 block">
                                             <InputLabel htmlFor="alamat_perusahaan" value="Link Maps" className='font-bold' />
@@ -208,7 +225,64 @@ export default function Dashboard({ children }: any) {
                                     </div>
                                 </div>
                             </div>
+                            <div className="bg-white p-5 shadow-xl rounded-xl col-span-2">
+                                <div className="judul">
+                                    <p className='font-bold text-md leading-normal'>Halaman Tentang Kami</p>
+                                    <div className="">
+                                        <div className="mt-4  block p-4">
 
+                                            <label htmlFor="imageSo">
+                                                <p className='block text-sm text-gray-700 font-bold'>Gambar</p>
+                                                {previewStrukturOrganisasi == null ? (
+                                                    <div className="p-20 border-2 border-gray-200 border-dashed cursor-pointer w-25 h-12">
+                                                        <p className='text-gray-500 text-lg text-center mx-auto my-auto'>+ Logo</p>
+                                                    </div>
+                                                ) : (
+                                                    <img src={previewStrukturOrganisasi} style={{ objectFit: "fill" }} className='w-25 h-25 mx-auto cursor-pointer' />
+                                                )}
+                                            </label>
+                                            {/* <input type="file" name="" id="" /> */}
+                                            <input type="file" name='previewImgStrukturOrganisasi' id='imageSo' style={{ display: "none" }} onChange={onPreviewStruktur} />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="">
+
+                                                <InputLabel htmlFor="email_perusahaan" value="Email Perusahaan" className='font-bold' />
+                                                <NoteLabel value="Masukkan Alamat Perusahaan" />
+                                                <TextInput
+                                                    id="email_perusahaan"
+                                                    type="text"
+                                                    name="email_perusahaan"
+                                                    value={data.email_perusahaan}
+                                                    className="mt-1 block w-full"
+                                                    autoComplete="username"
+                                                    isFocused={true}
+                                                    onChange={(e) => setData('email_perusahaan', e.target.value)}
+                                                />
+
+                                                <InputError message={errors.email_perusahaan} className="mt-2" />
+                                            </div>
+                                            <div className="">
+
+                                                <InputLabel htmlFor="email_perusahaan" value="Email Perusahaan" className='font-bold' />
+                                                <NoteLabel value="Masukkan Alamat Perusahaan" />
+                                                <TextInput
+                                                    id="email_perusahaan"
+                                                    type="text"
+                                                    name="email_perusahaan"
+                                                    value={data.email_perusahaan}
+                                                    className="mt-1 block w-full"
+                                                    autoComplete="username"
+                                                    isFocused={true}
+                                                    onChange={(e) => setData('email_perusahaan', e.target.value)}
+                                                />
+
+                                                <InputError message={errors.email_perusahaan} className="mt-2" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             {/* End Informasi Perusahaan */}
                         </div>
                     </div>
