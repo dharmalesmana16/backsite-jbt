@@ -1,12 +1,12 @@
-import Checkbox from '@/Components/Checkbox';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
-import axios from 'axios';
-import { FormEventHandler, useState } from 'react';
+import Checkbox from "@/Components/Checkbox";
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
+import TextInput from "@/Components/TextInput";
+import GuestLayout from "@/Layouts/GuestLayout";
+import { Head, Link, useForm } from "@inertiajs/react";
+import axios from "axios";
+import { FormEventHandler, useState } from "react";
 
 export default function Login({
     status,
@@ -15,51 +15,56 @@ export default function Login({
     status?: string;
     canResetPassword: boolean;
 }) {
-
     const { data, setData, post, processing, errors, reset } = useForm({
-        username: '',
-        password: '',
+        username: "",
+        password: "",
         remember: false as boolean,
     });
     const [isSuccess, setSuccess] = useState(2);
-    const [validation,setValidation] = useState("");
+    const [validation, setValidation] = useState("");
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-  e.preventDefault();
-        axios.post('/signin', {
-            username: data.username,
-            password: data.password
-        }).then(function (res) {
-            console.log(res.data.code);
-            if (res.data.code == 0) {
-                  setSuccess(0)
-            }
-            setSuccess(1);
-            setValidation(res.data.msg)
-            localStorage.setItem("token",res.data.token)
-            setData("password", "")
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 2000);
-        })
+        axios
+            .post("/signin", {
+                username: data.username,
+                password: data.password,
+            })
+            .then(function (res) {
+                console.log(res.data.code);
+                if (res.data.code == 0) {
+                    setSuccess(0);
+                }
+                setSuccess(1);
+                setValidation(res.data.msg);
+                localStorage.setItem("token", res.data.token);
+                setData("password", "");
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 2000);
+            });
     };
 
     return (
         <GuestLayout>
             <Head title="Log in" />
 
-              {
-                    isSuccess == 0 ? (
-
-                        <div className=" p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                            Gagal Buat Akun, Hubungi Adminstrator
-                        </div>
-                    ) : isSuccess == 1 && (
-                        <div className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
-                            {validation}
-                        </div>
-                    )
-                }
+            {isSuccess == 0 ? (
+                <div
+                    className=" p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                    role="alert"
+                >
+                    Gagal Buat Akun, Hubungi Adminstrator
+                </div>
+            ) : (
+                isSuccess == 1 && (
+                    <div
+                        className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                        role="alert"
+                    >
+                        {validation}
+                    </div>
+                )
+            )}
 
             <form onSubmit={submit}>
                 <div>
@@ -70,10 +75,10 @@ export default function Login({
                         type="username"
                         name="username"
                         value={data.username}
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-full p-2"
                         autoComplete="username"
                         isFocused={true}
-                        onChange={(e) => setData('username', e.target.value)}
+                        onChange={(e) => setData("username", e.target.value)}
                     />
 
                     <InputError message={errors.username} className="mt-2" />
@@ -89,7 +94,7 @@ export default function Login({
                         value={data.password}
                         className="mt-1 block w-full"
                         autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
+                        onChange={(e) => setData("password", e.target.value)}
                     />
 
                     <InputError message={errors.password} className="mt-2" />
@@ -102,8 +107,8 @@ export default function Login({
                             checked={data.remember}
                             onChange={(e) =>
                                 setData(
-                                    'remember',
-                                    (e.target.checked || false) as false,
+                                    "remember",
+                                    (e.target.checked || false) as false
                                 )
                             }
                         />
@@ -116,7 +121,7 @@ export default function Login({
                 <div className="mt-4 flex items-center justify-end">
                     {canResetPassword && (
                         <Link
-                            href={route('password.request')}
+                            href={route("password.request")}
                             className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         >
                             Forgot your password?

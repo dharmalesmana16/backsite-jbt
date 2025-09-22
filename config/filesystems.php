@@ -70,6 +70,14 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'public/image/resourcecompany' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/image/resourcecompany'),
+            'url' => env('APP_URL') . '/storage',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
 
         's3' => [
             'driver' => 's3',

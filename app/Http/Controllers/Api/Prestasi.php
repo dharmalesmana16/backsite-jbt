@@ -11,16 +11,17 @@ use Illuminate\Support\Str;
 class Prestasi extends Controller
 {
     protected $data;
-    public function __construct(){
+    public function __construct()
+    {
         $this->data = new ModelPrestasi();
     }
-    public function index(){
+    public function index()
+    {
         $res = $this->data::all();
         return response()->json([
-            "msg"=>"Success",
-            "data"=>$res
-        ],200);
-
+            "msg" => "Success",
+            "data" => $res
+        ], 200);
     }
     public function store(Request $request)
     {
@@ -39,9 +40,9 @@ class Prestasi extends Controller
         if ($request->has('file')) {
             $file = $request->file;
             $namaFile = Str::slug($nama) . "-prestasi-" . date("dmY") . "-" . time() . "." . $request->file->getClientOriginalExtension();
-            $file->storeAs('image/prestasi',$namaFile,'public');
+            $file->storeAs('image/prestasi', $namaFile, 'public');
             $dataUpload["ext"]  = $request->file->getClientOriginalExtension();
-            $dataUpload["size"] = number_format($request->file->getSize() / 1048576.2,2);
+            $dataUpload["size"] = number_format($request->file->getSize() / 1048576.2, 2);
             $dataUpload["file"] = $namaFile;
         }
         $res = $this->data::create($dataUpload);
@@ -53,7 +54,6 @@ class Prestasi extends Controller
         return response()->json([
             "msg" => "Success",
         ], 201);
-
     }
     /**
      * Display the specified resource.
@@ -78,9 +78,33 @@ class Prestasi extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $slug)
     {
+        $post = $this->data::where('slug', '=', $slug);
 
+        //check if image is not empty
+        if ($request->hasFile('image')) {
+            //upload image
+            $image = $request->file('image');
+            $image->storeAs('public/posts', $image->hashName());
+
+            //delete old image
+            Storage::delete('public/posts/' . basename($post->image));
+
+            //update post with new image
+            $post->update([
+                'image'     => $image->hashName(),
+                'title'     => $request->title,
+                'content'   => $request->content,
+            ]);
+        } else {
+
+            //update post without image
+            $post->update([
+                'title'     => $request->title,
+                'content'   => $request->content,
+            ]);
+        }
     }
 
     /**
@@ -100,7 +124,6 @@ class Prestasi extends Controller
         }
 
         $data->delete();
-        return response()->json(["msg" => "Data Berhasil Dihapus"],201);
-
+        return response()->json(["msg" => "Data Berhasil Dihapus"], 201);
     }
 }

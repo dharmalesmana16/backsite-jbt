@@ -25,13 +25,12 @@ class BeritaController extends Controller
     }
     public function store(Request $request)
     {
-        $nama = $request->nama;
+        $nama = $request->judul;
         $deskripsi = $request->deskripsi;
         $published_on = $request->published_on;
-
         $slug      = Str::slug($nama);
         $dataUpload = [
-            "nama" => $nama,
+            "judul" => $nama,
             "deskripsi"      => $deskripsi,
             "published_on"      => $published_on,
             "slug"      => $slug,
@@ -93,13 +92,11 @@ class BeritaController extends Controller
 
         $data = $this->data::where('slug', '=', $slug)->first();
         // return response()->json(["data"=>$request->json("nama_barang")]);
-        if ($data->gambar_first || $data->gambar_second || $data->gambar_third || $data->gambar_fourth) {
-            $exists = Storage::disk('public/image/tarif')->exists("{$data->gambar_first}");
+        if ($data->cover || $data->gambar_kedua) {
+            $exists = Storage::disk('public/image/berita')->exists("{$data->cover}");
             if ($exists) {
-                Storage::disk('public/image/tarif')->delete("{$data->gambar_first}");
-                Storage::disk('public/image/tarif')->delete("{$data->gambar_second}");
-                Storage::disk('public/image/tarif')->delete("{$data->gambar_third}");
-                Storage::disk('public/image/tarif')->delete("{$data->gambar_fourth}");
+                Storage::disk('public/image/berita')->delete("{$data->cover}");
+                Storage::disk('public/image/berita')->delete("{$data->gambar_kedua}");
             }
         }
 

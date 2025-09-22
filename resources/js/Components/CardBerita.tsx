@@ -2,13 +2,14 @@ import { Link } from "@inertiajs/react";
 import React from "react";
 
 export type propsBerita = {
-    id: number;
     judul: string;
     tanggal?: string;
     deskripsi: any;
     gambar?: string;
     published_on?: string;
     slug?: string;
+    onDelete: any;
+    urlUpdate: any;
 };
 
 export default function CardBerita(props: propsBerita) {
@@ -16,7 +17,11 @@ export default function CardBerita(props: propsBerita) {
         <div className="flex flex-col md:w-full w-full  mx-auto">
             <div className={props.gambar ? "" : "bg-main"}>
                 <img
-                    src={props.gambar ? props.gambar : "/images/berita.png"}
+                    src={
+                        props.gambar
+                            ? `/storage/image/berita/${props.gambar}`
+                            : "/images/berita.png"
+                    }
                     className={
                         props.gambar
                             ? "rounded-3xl w-full h-[200px] md:h-[250px]"
@@ -46,12 +51,30 @@ export default function CardBerita(props: propsBerita) {
                 )}
             </div>
             <h1 className="mt-5 text-md md:text-xl tracking-wide font-semibold dark:text-gray-900">
-                {props.judul.length > 100
-                    ? `${props.judul.substring(0, 95) + "..."}`
+                {props.judul
+                    ? props.judul.length > 100
+                        ? `${props.judul.substring(0, 95) + "..."}`
+                        : props.judul
                     : props.judul}
             </h1>
             <div className="py-5">
-                <a
+                <form onSubmit={props.onDelete} method="POST">
+                    <input type="hidden" name="slug" value={props.slug} />
+                    <button
+                        type="submit"
+                        className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                    >
+                        Hapus
+                    </button>
+
+                    <a
+                        href={props.urlUpdate ? props.urlUpdate : "#"}
+                        className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                    >
+                        Edit
+                    </a>
+                </form>
+                {/* <a
                     href={`/berita/${props.slug}`}
                     className="inline-flex items-center  text-sm font-medium  text-main  rounded-lg hover:text-blue-900   "
                 >
@@ -71,7 +94,7 @@ export default function CardBerita(props: propsBerita) {
                             d="M1 5h12m0 0L9 1m4 4L9 9"
                         />
                     </svg>
-                </a>
+                </a> */}
             </div>
         </div>
         // <div  className="flex flex-col max-w-sm p-6 h-72 content-end  bg-[url('/image/sekilas-layanan.jpg')] bg-gray-400 bg-blend-multiply bg-cover bg-no-repeat rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">

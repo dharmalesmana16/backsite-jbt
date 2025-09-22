@@ -11,7 +11,7 @@ import CardBerita from "@/Components/CardBerita";
 export default function Page() {
     const [dataBerita, setDataBerita] = useState([]);
     useEffect(() => {
-        axios.get("/api/tarif").then(function (response) {
+        axios.get("/api/berita").then(function (response) {
             console.log(response.data.data);
             setDataBerita(response.data.data);
         });
@@ -38,6 +38,7 @@ export default function Page() {
                             title: "Data Terhapus !",
                             text: "Data Berhasil Dihapus!",
                             icon: "success",
+                            showConfirmButton: false,
                         }).then(function () {
                             window.location.href = "/berita";
                         });
@@ -61,14 +62,17 @@ export default function Page() {
                 <HeaderPage pageName="Halaman Berita" link="/berita/create" />
                 <div className="py-8 ">
                     <div className=" max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <CardBerita
-                            judul="Berita Dalsfindo dan Nuansa Inti Persada"
-                            deskripsi={"Lorem Ipsum "}
-                        />
-                        <CardBerita
-                            judul="Berita Dalsfindo dan Nuansa Inti Persada"
-                            deskripsi={"Lorem Ipsum "}
-                        />
+                        {dataBerita.map((res: any, idx) => (
+                            <CardBerita
+                                judul={res.judul}
+                                tanggal={res.tanggal}
+                                deskripsi={res.deskripsi}
+                                onDelete={onDeleteSubmit}
+                                slug={res.slug}
+                                urlUpdate={`/berita/update/${res.slug}`}
+                            />
+                            // <CardDireksi slug={res.slug} onDelete={onDeleteSubmit} cardFor="direksi" jabatan={res.jabatan} nama={res.nama} srcImage={res.file ? `/storage/image/direksi/${res.file}` : "/images/person.png"} urlDelete={`/api/direksi/${res.slug}`} urlUpdate={`/direksi/update/${res.slug}`} />
+                        ))}
                     </div>
                 </div>
             </DashboardLayout>

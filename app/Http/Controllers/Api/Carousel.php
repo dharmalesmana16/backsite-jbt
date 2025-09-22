@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -31,7 +32,7 @@ class Carousel extends Controller
     public function store(Request $request)
     {
         $nama_file = $request->nama_file;
-        $type_file = $request->type_file;
+        $type_file = "image";
         $slug      = Str::slug($nama_file);
 
         $dataUpload = [
@@ -40,13 +41,13 @@ class Carousel extends Controller
             "slug"      => $slug,
 
         ];
-        if ($request->has('file')) {
-                        $file = $request->file;
+        if ($request->file('file_carousel')) {
+            $file = $request->file_carousel;
 
-            $namaFile = Str::slug($nama_file) . "-carousel-" . date("dmY") . "-" . time() . "." . $request->file->getClientOriginalExtension();
-                $file->storeAs('image/carousel',$namaFile,'public');
-            $dataUpload["ext"]  = $request->file->getClientOriginalExtension();
-            $dataUpload["size"] = $request->file->getSize() / 1048576.2;
+            $namaFile = Str::slug($nama_file) . "-carousel-" . date("dmY") . "-" . time() . "." . $request->file_carousel->getClientOriginalExtension();
+            $file->storeAs('image/carousel', $namaFile, 'public');
+            $dataUpload["ext"]  = $request->file_carousel->getClientOriginalExtension();
+            $dataUpload["size"] = $request->file_carousel->getSize() / 1048576.2;
             $dataUpload["file"] = $namaFile;
         }
         $res = $this->data::create($dataUpload);
@@ -58,7 +59,6 @@ class Carousel extends Controller
         return response()->json([
             "msg" => "Success",
         ], 201);
-
     }
 
     /**
@@ -90,12 +90,11 @@ class Carousel extends Controller
             Storage::disk('public')->put($namaFile, file_get_contents($request->file));
             $data->file = $namaFile;
             $data->ext  = $request->file->getClientOriginalExtension();
-            $data->size = number_format($request->file->getSize() / 1048576.2,2);
+            $data->size = number_format($request->file->getSize() / 1048576.2, 2);
         }
         $data->slug     = Str::slug($data->nama_file);
         $data->is_shown = $request->is_shown;
         $data->save();
-
     }
 
     /**
@@ -112,6 +111,6 @@ class Carousel extends Controller
             }
         }
         $data->delete();
-        return response()->json(["msg" => "Data Berhasil Dihapus"],201);
+        return response()->json(["msg" => "Data Berhasil Dihapus"], 201);
     }
 }

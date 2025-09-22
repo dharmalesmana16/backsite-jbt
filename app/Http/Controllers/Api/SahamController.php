@@ -11,16 +11,17 @@ use Illuminate\Support\Str;
 class SahamController extends Controller
 {
     protected $data;
-    public function __construct(){
+    public function __construct()
+    {
         $this->data = new Saham();
     }
-    public function index(){
+    public function index()
+    {
         $res = $this->data::all();
         return response()->json([
-            "msg"=>"Success",
-            "data"=>$res
-        ],200);
-
+            "msg" => "Success",
+            "data" => $res
+        ], 200);
     }
     public function store(Request $request)
     {
@@ -56,7 +57,6 @@ class SahamController extends Controller
         return response()->json([
             "msg" => "Success",
         ], 201);
-
     }
     /**
      * Display the specified resource.
@@ -78,10 +78,7 @@ class SahamController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-
-    }
+    public function update(Request $request, string $id) {}
 
     /**
      * Remove the specified resource from storage.
@@ -103,7 +100,6 @@ class SahamController extends Controller
         }
 
         $data->delete();
-        return response()->json(["msg" => "Data Berhasil Dihapus"],201);
-
+        return response()->json(["msg" => "Data Berhasil Dihapus"], 201);
     }
 }

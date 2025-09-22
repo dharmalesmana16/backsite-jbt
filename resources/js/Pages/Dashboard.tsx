@@ -2,16 +2,20 @@ import HeaderPage from "@/Components/HeaderPage";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import NoteLabel from "@/Components/NoteLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
 import DashboardLayout from "@/Layouts/DashboardLayout";
 import { PageProps } from "@/types";
 import { Head, Link, useForm } from "@inertiajs/react";
-import { useEffect, useState } from "react";
+import axios from "axios";
+import { FormEventHandler, useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
-export default function Dashboard({ children }: any) {
+export default function Dashboard({ dataPerusahaan }: any) {
     const [previewLogo, setPreviewLogo] = useState<any>(null);
     const [previewStrukturOrganisasi, setPreviewStrukturOrganisasi] =
         useState<any>(null);
+    const [previewCarousel, setPreviewCarousel] = useState<any>(null);
     function onPreviewLogo(e: any) {
         let dataImage = e.target.files[0];
         if (dataImage) {
@@ -26,26 +30,104 @@ export default function Dashboard({ children }: any) {
             setPreviewStrukturOrganisasi(URL.createObjectURL(dataimages));
         }
     }
+    function onPreviewCarousel(e: any) {
+        let dataimages = e.target.files[0];
+        if (dataimages) {
+            setData("file_carousel", dataimages);
+            setPreviewCarousel(URL.createObjectURL(dataimages));
+        }
+    }
     // const { dataVideo, setDataVideo } = useForm({
     //     video: '',
     // });
     const { data, setData, post, processing, errors, reset } = useForm({
-        nama_perusahaan: "",
-        alamat_perusahaan: "",
-        email_perusahaan: "",
+        nama_perusahaan: dataPerusahaan.nama_perusahaan,
+        alamat_perusahaan: dataPerusahaan.alamat_perusahaan,
+        email_perusahaan: dataPerusahaan.email_perusahaan,
         logo: "",
-        deskripsi: "",
-        url_maps: "",
-        telp_kantor: "",
-        call_center: "",
+        deskripsi: dataPerusahaan.deskripsi,
+        url_maps: dataPerusahaan.url_maps,
+        telp_kantor: dataPerusahaan.no_telp,
+        call_center: dataPerusahaan.call_center,
         video: "",
         file_struktur_organisasi: "",
+        nama_file_carousel: "",
+        file_carousel: "",
     });
+    console.log(data.nama_perusahaan);
+
+    const onUpdateResourceCompany: FormEventHandler = (e) => {
+        e.preventDefault();
+
+        axios
+            .post(
+                `/api/informasiperusahaan/${dataPerusahaan.id}`,
+                {
+                    _method: "PUT",
+                    nama_perusahaan: data.nama_perusahaan,
+                    alamat_perusahaan: data.alamat_perusahaan,
+                    deskripsi: data.deskripsi,
+                    logo: data.logo !== null && data.logo,
+                    email_perusahaan: data.email_perusahaan,
+                    no_telp: data.telp_kantor,
+                    call_center: data.call_center,
+                    url_maps: data.url_maps,
+                    file_struktur_organisasi:
+                        data.file_struktur_organisasi !== null &&
+                        data.file_struktur_organisasi,
+                },
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data", // Important for file uploads
+                    },
+                }
+            )
+            .then(function (response) {
+                console.log(response);
+                Swal.fire({
+                    title: "Sukses",
+                    text: "Data Berhasil Diubah !",
+                    icon: "success",
+                    timer: 2000,
+                });
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 1000);
+            });
+    };
+    const onCreateCarousel: FormEventHandler = (e) => {
+        e.preventDefault();
+
+        axios
+            .post(
+                `/api/carousel`,
+                {
+                    nama_file: data.nama_file_carousel,
+                    file_carousel: data.file_carousel,
+                },
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data", // Important for file uploads
+                    },
+                }
+            )
+            .then(function (response) {
+                console.log(response);
+                Swal.fire({
+                    title: "Sukses",
+                    text: "Data Berhasil Diubah !",
+                    icon: "success",
+                    timer: 2000,
+                });
+                setTimeout(() => {
+                    window.location.href = "/";
+                }, 1000);
+            });
+    };
 
     return (
         <>
             <Head title="Home" />
-
             <DashboardLayout>
                 <div className="py-8 ">
                     <div className=" w-full mx-auto ">
@@ -57,243 +139,260 @@ export default function Dashboard({ children }: any) {
                                         Informasi Perusahaan
                                     </p>
                                     <div className="">
-                                        <div className="mt-4  block p-4">
-                                            <label htmlFor="firstImage">
-                                                <p className="block text-sm text-gray-700 font-bold">
-                                                    Logo Perusahaan
-                                                </p>
-                                                {previewLogo == null ? (
-                                                    <div className="p-20 border-2 border-gray-200 border-dashed cursor-pointer w-25 h-12">
-                                                        <p className="text-gray-500 text-lg text-center mx-auto my-auto">
-                                                            + Logo
-                                                        </p>
-                                                    </div>
-                                                ) : (
+                                        <form
+                                            action={`/api/informasiperusahaan/${dataPerusahaan.id}`}
+                                            method="post"
+                                            onSubmit={onUpdateResourceCompany}
+                                        >
+                                            <div className="mt-4  block p-4">
+                                                <label htmlFor="firstImage">
+                                                    <p className="block text-sm text-gray-700 font-bold">
+                                                        Logo Perusahaan
+                                                    </p>
+
                                                     <img
-                                                        src={previewLogo}
+                                                        src={
+                                                            previewLogo
+                                                                ? previewLogo
+                                                                : `/storage/image/resourcecompany/${dataPerusahaan.logo}`
+                                                        }
                                                         style={{
                                                             objectFit: "fill",
                                                         }}
                                                         className="w-25 h-25 mx-auto cursor-pointer"
                                                     />
-                                                )}
-                                            </label>
-                                            {/* <input type="file" name="" id="" /> */}
-                                            <input
-                                                type="file"
-                                                name="previewImg1"
-                                                id="firstImage"
-                                                style={{ display: "none" }}
-                                                onChange={onPreviewLogo}
-                                            />
-                                        </div>
-                                        <div className="mt-4 block">
-                                            <InputLabel
-                                                htmlFor="nama_perusahaan"
-                                                value="Nama Perusahaan"
-                                                className="font-bold"
-                                            />
-                                            <NoteLabel value="Masukkan Alamat Perusahaan" />
-                                            <TextInput
-                                                id="nama_perusahaan"
-                                                type="text"
-                                                name="nama_perusahaan"
-                                                value={data.nama_perusahaan}
-                                                className="mt-1 block w-full"
-                                                autoComplete="username"
-                                                isFocused={true}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "nama_perusahaan",
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
+                                                </label>
+                                                {/* <input type="file" name="" id="" /> */}
+                                                <input
+                                                    type="file"
+                                                    name="previewImg1"
+                                                    id="firstImage"
+                                                    style={{ display: "none" }}
+                                                    onChange={onPreviewLogo}
+                                                />
+                                            </div>
+                                            <div className="mt-4 block">
+                                                <InputLabel
+                                                    htmlFor="nama_perusahaan"
+                                                    value="Nama Perusahaan"
+                                                    className="font-bold"
+                                                />
+                                                <NoteLabel value="Masukkan Alamat Perusahaan" />
+                                                <TextInput
+                                                    id="nama_perusahaan"
+                                                    type="text"
+                                                    name="nama_perusahaan"
+                                                    value={data.nama_perusahaan}
+                                                    className="mt-1 block w-full"
+                                                    autoComplete="username"
+                                                    isFocused={true}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            "nama_perusahaan",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
 
-                                            <InputError
-                                                message={errors.nama_perusahaan}
-                                                className="mt-2"
-                                            />
-                                        </div>
-                                        <div className="mt-4 block">
-                                            <InputLabel
-                                                htmlFor="deskripsi"
-                                                value="Deskripsi"
-                                                className="font-bold"
-                                            />
-                                            <NoteLabel value="Masukkan Deskripsi Perusahaan" />
-                                            <TextInput
-                                                id="deskripsi"
-                                                type="text"
-                                                name="deskripsi"
-                                                value={data.deskripsi}
-                                                className="mt-1 block w-full"
-                                                autoComplete="username"
-                                                isFocused={true}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "deskripsi",
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
+                                                <InputError
+                                                    message={
+                                                        errors.nama_perusahaan
+                                                    }
+                                                    className="mt-2"
+                                                />
+                                            </div>
+                                            <div className="mt-4 block">
+                                                <InputLabel
+                                                    htmlFor="deskripsi"
+                                                    value="Deskripsi"
+                                                    className="font-bold"
+                                                />
+                                                <NoteLabel value="Masukkan Deskripsi Perusahaan" />
+                                                <TextInput
+                                                    id="deskripsi"
+                                                    type="text"
+                                                    name="deskripsi"
+                                                    value={data.deskripsi}
+                                                    className="mt-1 block w-full"
+                                                    autoComplete="username"
+                                                    isFocused={true}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            "deskripsi",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
 
-                                            <InputError
-                                                message={errors.deskripsi}
-                                                className="mt-2"
-                                            />
-                                        </div>
-                                        <div className="mt-4 block">
-                                            <InputLabel
-                                                htmlFor="alamat_perusahaan"
-                                                value="Alamat Perusahaan"
-                                                className="font-bold"
-                                            />
-                                            <NoteLabel value="Masukkan Alamat Perusahaan" />
-                                            <TextInput
-                                                id="alamat_perusahaan"
-                                                type="text"
-                                                name="alamat_perusahaan"
-                                                value={data.alamat_perusahaan}
-                                                className="mt-1 block w-full"
-                                                autoComplete="username"
-                                                isFocused={true}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "alamat_perusahaan",
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
+                                                <InputError
+                                                    message={errors.deskripsi}
+                                                    className="mt-2"
+                                                />
+                                            </div>
+                                            <div className="mt-4 block">
+                                                <InputLabel
+                                                    htmlFor="alamat_perusahaan"
+                                                    value="Alamat Perusahaan"
+                                                    className="font-bold"
+                                                />
+                                                <NoteLabel value="Masukkan Alamat Perusahaan" />
+                                                <TextInput
+                                                    id="alamat_perusahaan"
+                                                    type="text"
+                                                    name="alamat_perusahaan"
+                                                    value={
+                                                        data.alamat_perusahaan
+                                                    }
+                                                    className="mt-1 block w-full"
+                                                    autoComplete="username"
+                                                    isFocused={true}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            "alamat_perusahaan",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
 
-                                            <InputError
-                                                message={
-                                                    errors.alamat_perusahaan
-                                                }
-                                                className="mt-2"
-                                            />
-                                        </div>
-                                        <div className="mt-4 block">
-                                            <InputLabel
-                                                htmlFor="telp_kantor"
-                                                value="Telp Kantor"
-                                                className="font-bold"
-                                            />
-                                            <NoteLabel value="Masukkan Telp Kantor" />
-                                            <TextInput
-                                                id="telp_kantor"
-                                                type="text"
-                                                name="telp_kantor"
-                                                value={data.telp_kantor}
-                                                className="mt-1 block w-full"
-                                                autoComplete="username"
-                                                isFocused={true}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "telp_kantor",
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
+                                                <InputError
+                                                    message={
+                                                        errors.alamat_perusahaan
+                                                    }
+                                                    className="mt-2"
+                                                />
+                                            </div>
+                                            <div className="mt-4 block">
+                                                <InputLabel
+                                                    htmlFor="telp_kantor"
+                                                    value="Telp Kantor"
+                                                    className="font-bold"
+                                                />
+                                                <NoteLabel value="Masukkan Telp Kantor" />
+                                                <TextInput
+                                                    id="telp_kantor"
+                                                    type="text"
+                                                    name="telp_kantor"
+                                                    value={data.telp_kantor}
+                                                    className="mt-1 block w-full"
+                                                    autoComplete="username"
+                                                    isFocused={true}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            "telp_kantor",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
 
-                                            <InputError
-                                                message={errors.telp_kantor}
-                                                className="mt-2"
-                                            />
-                                        </div>
-                                        <div className="mt-4 block">
-                                            <InputLabel
-                                                htmlFor="call_center"
-                                                value="Call Center"
-                                                className="font-bold"
-                                            />
-                                            <NoteLabel value="Masukkan Telp Kantor" />
-                                            <TextInput
-                                                id="call_center"
-                                                type="text"
-                                                name="call_center"
-                                                value={data.call_center}
-                                                className="mt-1 block w-full"
-                                                autoComplete="username"
-                                                isFocused={true}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "call_center",
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
+                                                <InputError
+                                                    message={errors.telp_kantor}
+                                                    className="mt-2"
+                                                />
+                                            </div>
+                                            <div className="mt-4 block">
+                                                <InputLabel
+                                                    htmlFor="call_center"
+                                                    value="Call Center"
+                                                    className="font-bold"
+                                                />
+                                                <NoteLabel value="Masukkan Telp Kantor" />
+                                                <TextInput
+                                                    id="call_center"
+                                                    type="text"
+                                                    name="call_center"
+                                                    value={data.call_center}
+                                                    className="mt-1 block w-full"
+                                                    autoComplete="username"
+                                                    isFocused={true}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            "call_center",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
 
-                                            <InputError
-                                                message={errors.call_center}
-                                                className="mt-2"
-                                            />
-                                        </div>
-                                        <div className="mt-4 block">
-                                            <InputLabel
-                                                htmlFor="email_perusahaan"
-                                                value="Email Perusahaan"
-                                                className="font-bold"
-                                            />
-                                            <NoteLabel value="Masukkan Alamat Perusahaan" />
-                                            <TextInput
-                                                id="email_perusahaan"
-                                                type="text"
-                                                name="email_perusahaan"
-                                                value={data.email_perusahaan}
-                                                className="mt-1 block w-full"
-                                                autoComplete="username"
-                                                isFocused={true}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "email_perusahaan",
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
+                                                <InputError
+                                                    message={errors.call_center}
+                                                    className="mt-2"
+                                                />
+                                            </div>
+                                            <div className="mt-4 block">
+                                                <InputLabel
+                                                    htmlFor="email_perusahaan"
+                                                    value="Email Perusahaan"
+                                                    className="font-bold"
+                                                />
+                                                <NoteLabel value="Masukkan Alamat Perusahaan" />
+                                                <TextInput
+                                                    id="email_perusahaan"
+                                                    type="text"
+                                                    name="email_perusahaan"
+                                                    value={
+                                                        data.email_perusahaan
+                                                    }
+                                                    className="mt-1 block w-full"
+                                                    autoComplete="username"
+                                                    isFocused={true}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            "email_perusahaan",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
 
-                                            <InputError
-                                                message={
-                                                    errors.email_perusahaan
-                                                }
-                                                className="mt-2"
-                                            />
-                                        </div>
-                                        <div className="mt-4 block">
-                                            <InputLabel
-                                                htmlFor="url_maps"
-                                                value="Link Maps"
-                                                className="font-bold"
-                                            />
-                                            <NoteLabel value="Masukkan Link Maps" />
-                                            <TextInput
-                                                id="url_maps"
-                                                type="text"
-                                                name="url_maps"
-                                                value={data.url_maps}
-                                                className="mt-1 block w-full"
-                                                autoComplete="username"
-                                                isFocused={true}
-                                                onChange={(e) =>
-                                                    setData(
-                                                        "url_maps",
-                                                        e.target.value
-                                                    )
-                                                }
-                                            />
+                                                <InputError
+                                                    message={
+                                                        errors.email_perusahaan
+                                                    }
+                                                    className="mt-2"
+                                                />
+                                            </div>
+                                            <div className="mt-4 block">
+                                                <InputLabel
+                                                    htmlFor="url_maps"
+                                                    value="Link Maps"
+                                                    className="font-bold"
+                                                />
+                                                <NoteLabel value="Masukkan Link Maps" />
+                                                <TextInput
+                                                    id="url_maps"
+                                                    type="text"
+                                                    name="url_maps"
+                                                    value={data.url_maps}
+                                                    className="mt-1 block w-full"
+                                                    autoComplete="username"
+                                                    isFocused={true}
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            "url_maps",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                />
 
-                                            <InputError
-                                                message={errors.url_maps}
-                                                className="mt-2"
-                                            />
-                                        </div>
+                                                <InputError
+                                                    message={errors.url_maps}
+                                                    className="mt-2"
+                                                />
+                                            </div>
+                                            <div className="mt-4 flex items-center justify-end">
+                                                <PrimaryButton
+                                                    className="ms-4"
+                                                    disabled={processing}
+                                                >
+                                                    Update Data
+                                                </PrimaryButton>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
 
                             {/* End Informasi Perusahaan */}
                             {/* Informasi Carousel */}
-                            <div className="col-span-2">
+                            <div className="col-span-2 gap-4">
                                 <div className="bg-white p-5 shadow-xl rounded-xl">
                                     <div className="judul">
                                         <p className="font-bold text-md leading-normal">
@@ -343,6 +442,56 @@ export default function Dashboard({ children }: any) {
                                         </div>
                                     </div>
                                 </div>
+                                <div className="bg-white p-5 shadow-xl rounded-xl mt-2">
+                                    <div className="judul">
+                                        <p className="font-bold text-md leading-normal">
+                                            Informasi Carousel (Tampilan Dibawah
+                                            Tarif pada Web)
+                                        </p>
+                                        <div className="">
+                                            <form action="">
+                                                <div className="mt-4  block p-4">
+                                                    <label htmlFor="imageCarousel">
+                                                        <p className="block text-sm text-gray-700 font-bold">
+                                                            Gambar
+                                                        </p>
+                                                        {previewCarousel ==
+                                                        null ? (
+                                                            <div className="p-20 border-2 border-gray-200 border-dashed cursor-pointer w-full h-72">
+                                                                <p className="text-gray-500 text-lg text-center mx-auto my-auto">
+                                                                    + Img
+                                                                </p>
+                                                            </div>
+                                                        ) : (
+                                                            <img
+                                                                src={
+                                                                    previewCarousel
+                                                                }
+                                                                style={{
+                                                                    objectFit:
+                                                                        "fill",
+                                                                }}
+                                                                className="w-full h-72 mx-auto cursor-pointer"
+                                                            />
+                                                        )}
+                                                    </label>
+                                                    {/* <input type="file" name="" id="" /> */}
+                                                    <input
+                                                        type="file"
+                                                        name="previewImgStrukturOrganisasi"
+                                                        id="imageCarousel"
+                                                        style={{
+                                                            display: "none",
+                                                        }}
+                                                        onChange={
+                                                            onPreviewCarousel
+                                                        }
+                                                    />
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div className="md:grid md:grid-cols-3 gap-4 py-5">
@@ -353,102 +502,112 @@ export default function Dashboard({ children }: any) {
                                         Struktur Organisasi
                                     </p>
                                     <div className="">
-                                        <div className="mt-4  block p-4">
-                                            <label htmlFor="imageSo">
-                                                <p className="block text-sm text-gray-700 font-bold">
-                                                    Gambar
-                                                </p>
-                                                {previewStrukturOrganisasi ==
-                                                null ? (
-                                                    <div className="p-20 border-2 border-gray-200 border-dashed cursor-pointer w-25 h-12">
-                                                        <p className="text-gray-500 text-lg text-center mx-auto my-auto">
-                                                            + Logo
-                                                        </p>
-                                                    </div>
-                                                ) : (
+                                        <form
+                                            action=""
+                                            onSubmit={onUpdateResourceCompany}
+                                        >
+                                            <div className="mt-4  block p-4">
+                                                <label htmlFor="imageSo">
+                                                    <p className="block text-sm text-gray-700 font-bold">
+                                                        Gambar
+                                                    </p>
                                                     <img
                                                         src={
                                                             previewStrukturOrganisasi
+                                                                ? previewStrukturOrganisasi
+                                                                : `/storage/image/resourcecompany/${dataPerusahaan.struktur_organisasi}`
                                                         }
                                                         style={{
                                                             objectFit: "fill",
                                                         }}
                                                         className="w-25 h-25 mx-auto cursor-pointer"
                                                     />
-                                                )}
-                                            </label>
-                                            {/* <input type="file" name="" id="" /> */}
-                                            <input
-                                                type="file"
-                                                name="previewImgStrukturOrganisasi"
-                                                id="imageSo"
-                                                style={{ display: "none" }}
-                                                onChange={onPreviewStruktur}
-                                            />
-                                        </div>
+                                                </label>
+                                                {/* <input type="file" name="" id="" /> */}
+                                                <input
+                                                    type="file"
+                                                    name="previewImgStrukturOrganisasi"
+                                                    id="imageSo"
+                                                    style={{ display: "none" }}
+                                                    onChange={onPreviewStruktur}
+                                                />
+                                            </div>
+                                            <div className="mt-4 flex items-center justify-end">
+                                                <PrimaryButton
+                                                    className="ms-4"
+                                                    disabled={processing}
+                                                >
+                                                    Update Data
+                                                </PrimaryButton>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                             <div className="bg-white p-5 shadow-xl rounded-xl col-span-2">
                                 <div className="judul">
                                     <p className="font-bold text-md leading-normal">
-                                        Halaman Tentang Kami
+                                        Informasi Carousel (Tampilan Dibawah
+                                        Tarif pada Web)
                                     </p>
                                     <div className="">
-                                        <div className="mt-4  block p-4">
-                                            <label htmlFor="imageSo">
-                                                <p className="block text-sm text-gray-700 font-bold">
-                                                    Gambar
-                                                </p>
-                                                {previewStrukturOrganisasi ==
-                                                null ? (
-                                                    <div className="p-20 border-2 border-gray-200 border-dashed cursor-pointer w-25 h-12">
-                                                        <p className="text-gray-500 text-lg text-center mx-auto my-auto">
-                                                            + Logo
-                                                        </p>
-                                                    </div>
-                                                ) : (
-                                                    <img
-                                                        src={
-                                                            previewStrukturOrganisasi
-                                                        }
-                                                        style={{
-                                                            objectFit: "fill",
-                                                        }}
-                                                        className="w-25 h-25 mx-auto cursor-pointer"
-                                                    />
-                                                )}
-                                            </label>
-                                            {/* <input type="file" name="" id="" /> */}
-                                            <input
-                                                type="file"
-                                                name="previewImgStrukturOrganisasi"
-                                                id="imageSo"
-                                                style={{ display: "none" }}
-                                                onChange={onPreviewStruktur}
-                                            />
-                                        </div>
-                                        <div className="grid grid-cols-2 gap-4">
+                                        <form
+                                            action=""
+                                            onSubmit={onCreateCarousel}
+                                        >
+                                            <div className="mt-4  block p-4">
+                                                <label htmlFor="imageCarousel">
+                                                    <p className="block text-sm text-gray-700 font-bold">
+                                                        Gambar
+                                                    </p>
+                                                    {previewCarousel == null ? (
+                                                        <div className="p-20 border-2 border-gray-200 border-dashed cursor-pointer w-full h-72">
+                                                            <p className="text-gray-500 text-lg text-center mx-auto my-auto">
+                                                                + Img
+                                                            </p>
+                                                        </div>
+                                                    ) : (
+                                                        <img
+                                                            src={
+                                                                previewCarousel
+                                                            }
+                                                            style={{
+                                                                objectFit:
+                                                                    "fill",
+                                                            }}
+                                                            className="w-full h-72 mx-auto cursor-pointer"
+                                                        />
+                                                    )}
+                                                </label>
+                                                {/* <input type="file" name="" id="" /> */}
+                                                <input
+                                                    type="file"
+                                                    name="previewImgStrukturOrganisasi"
+                                                    id="imageCarousel"
+                                                    style={{ display: "none" }}
+                                                    onChange={onPreviewCarousel}
+                                                />
+                                            </div>
                                             <div className="">
                                                 <InputLabel
-                                                    htmlFor="email_perusahaan"
-                                                    value="Email Perusahaan"
+                                                    htmlFor="nama_file_carousel"
+                                                    value="Nama / Identitas Carousel"
                                                     className="font-bold"
                                                 />
                                                 <NoteLabel value="Masukkan Alamat Perusahaan" />
                                                 <TextInput
-                                                    id="email_perusahaan"
+                                                    id="nama_file_carousel"
                                                     type="text"
-                                                    name="email_perusahaan"
+                                                    name="nama_file_carousel"
                                                     value={
-                                                        data.email_perusahaan
+                                                        data.nama_file_carousel
                                                     }
                                                     className="mt-1 block w-full"
                                                     autoComplete="username"
                                                     isFocused={true}
                                                     onChange={(e) =>
                                                         setData(
-                                                            "email_perusahaan",
+                                                            "nama_file_carousel",
                                                             e.target.value
                                                         )
                                                     }
@@ -456,44 +615,20 @@ export default function Dashboard({ children }: any) {
 
                                                 <InputError
                                                     message={
-                                                        errors.email_perusahaan
+                                                        errors.nama_file_carousel
                                                     }
                                                     className="mt-2"
                                                 />
                                             </div>
-                                            <div className="">
-                                                <InputLabel
-                                                    htmlFor="email_perusahaan"
-                                                    value="Email Perusahaan"
-                                                    className="font-bold"
-                                                />
-                                                <NoteLabel value="Masukkan Alamat Perusahaan" />
-                                                <TextInput
-                                                    id="email_perusahaan"
-                                                    type="text"
-                                                    name="email_perusahaan"
-                                                    value={
-                                                        data.email_perusahaan
-                                                    }
-                                                    className="mt-1 block w-full"
-                                                    autoComplete="username"
-                                                    isFocused={true}
-                                                    onChange={(e) =>
-                                                        setData(
-                                                            "email_perusahaan",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-
-                                                <InputError
-                                                    message={
-                                                        errors.email_perusahaan
-                                                    }
-                                                    className="mt-2"
-                                                />
+                                            <div className="mt-4 flex items-center justify-end">
+                                                <PrimaryButton
+                                                    className="ms-4"
+                                                    disabled={processing}
+                                                >
+                                                    Tambah Data
+                                                </PrimaryButton>
                                             </div>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

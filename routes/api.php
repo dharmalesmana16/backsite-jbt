@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Prestasi;
 use App\Http\Controllers\Api\ReportYearly;
 use App\Http\Controllers\Api\SahamController;
 use App\Http\Controllers\Api\TarifController;
+use App\Http\Controllers\Api\PerusahaanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,4 @@ Route::apiResource("/tarif", TarifController::class);
 Route::apiResource("/prestasi", Prestasi::class);
 Route::apiResource("/saham", SahamController::class);
 Route::apiResource("/berita", BeritaController::class);
+Route::apiResource("/informasiperusahaan", PerusahaanController::class);

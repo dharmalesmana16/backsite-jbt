@@ -4,14 +4,20 @@ use App\Http\Controllers\Api\DireksiController;
 use App\Http\Controllers\Api\Prestasi;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Berita;
 use App\Models\Direksi;
+use App\Models\InformasiPerusahaan;
 use App\Models\Prestasi as ModelsPrestasi;
 use App\Models\Saham;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    return Inertia::render('Dashboard');
+    $dataPerusahaan = new InformasiPerusahaan();
+    $data = [
+        "dataPerusahaan" => $dataPerusahaan::where("id", "=", "1")->first()
+    ];
+    return Inertia::render('Dashboard', $data);
 });
 Route::get('/tarif', function () {
     return Inertia::render('Tarif/Page');
@@ -93,7 +99,7 @@ Route::prefix("berita")->group(function () {
         return Inertia::render('Berita/Page');
     });
     Route::get('/update/{slug}', function ($slug) {
-        $model = new Saham();
+        $model = new Berita();
         $data = $model::where("slug", "=", $slug)->first();
         return Inertia::render('Berita/Update', ['slug' => $data]);
     });
