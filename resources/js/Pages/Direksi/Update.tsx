@@ -23,17 +23,19 @@ export default function Update({ slug }: any) {
     let pathName = currentPathname.split("/");
     let propsSlug = pathName[3];
     const { data, setData, post, processing, errors, reset } = useForm({
-        nama: slug.nama,
-        tempat_lahir: slug.tempat_lahir,
-        tgl_lahir: new Date(slug.tgl_lahir),
+        nama: slug.nama as string,
+        tempat_lahir: slug.tempat_lahir as string,
+        tgl_lahir: "",
         file: slug.file,
-        jabatan: slug.jabatan,
-        deskripsi: slug.deskripsi,
-        tipe_direksi: slug.tipe_direksi,
+        jabatan: slug.jabatan as string,
+        deskripsi: slug.deskripsi as string,
+        tipe_direksi: slug.tipe_direksi as string,
     });
 
     const handleDateChange = (date: any) => {
         let newDateFormat = formatDate(date, "yyyy-MM-dd");
+        // slug.tgl_lahir = "";
+        console.log(newDateFormat);
         setData("tgl_lahir", newDateFormat); // Update the state with the new date
     };
 
@@ -47,7 +49,10 @@ export default function Update({ slug }: any) {
                     _method: "PUT",
                     nama: data.nama,
                     tempat_lahir: data.tempat_lahir,
-                    tgl_lahir: data.tgl_lahir,
+                    tgl_lahir:
+                        data.tgl_lahir == ""
+                            ? slug.tgl_lahir.toString()
+                            : data.tgl_lahir.toString(),
                     jabatan: data.jabatan,
                     tipe_direksi: data.tipe_direksi,
                     deskripsi: data.deskripsi,
@@ -209,8 +214,20 @@ export default function Update({ slug }: any) {
                                                 />
                                                 <NoteLabel value="Masukkan Tanggal Lahir (Opsional)" />
                                                 <Datepicker
-                                                    value={data.tgl_lahir}
+                                                    value={
+                                                        data.tgl_lahir == ""
+                                                            ? new Date(
+                                                                  slug.tgl_lahir
+                                                              )
+                                                            : data.tgl_lahir
+                                                    }
                                                     onChange={handleDateChange}
+                                                    className="text-gray-900"
+                                                    style={{
+                                                        backgroundColor:
+                                                            "white",
+                                                        color: "black",
+                                                    }}
                                                 />
                                                 <InputError
                                                     message={errors.tgl_lahir}

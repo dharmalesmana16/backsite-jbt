@@ -80,31 +80,47 @@ class Prestasi extends Controller
      */
     public function update(Request $request, string $slug)
     {
-        $post = $this->data::where('slug', '=', $slug);
+        $post = $this->data::where('slug', '=', $slug)->first();
+        $nama = $request->nama;
+        $tanggal = $request->tanggal;
+        $deskripsi = $request->deskripsi;
+        $slug      = Str::slug($nama);
 
+        $dataUpload = [
+            "nama" => $nama,
+            "deskripsi" => $deskripsi,
+            "tanggal"      => $tanggal,
+            "slug"      => $slug,
+
+        ];
         //check if image is not empty
-        if ($request->hasFile('image')) {
+        if ($request->file('file')) {
+
+            $exists = Storage::disk('public/image/prestasi')->exists("{$post->file}");
+            if ($exists) {
+                Storage::disk('public/image/prestasi')->delete("{$post->file}");
+            }
+
+            $image = $request->file('file');
+            $namaFile = $slug . date("dmY") . "-" . time() . "." . $request->file->getClientOriginalExtension();
+
+            $image->storeAs('image/direksi', $namaFile, 'public');
+            $dataUpload["file"] = $namaFile;
             //upload image
-            $image = $request->file('image');
-            $image->storeAs('public/posts', $image->hashName());
-
-            //delete old image
-            Storage::delete('public/posts/' . basename($post->image));
-
             //update post with new image
-            $post->update([
-                'image'     => $image->hashName(),
-                'title'     => $request->title,
-                'content'   => $request->content,
-            ]);
-        } else {
-
-            //update post without image
-            $post->update([
-                'title'     => $request->title,
-                'content'   => $request->content,
-            ]);
         }
+
+        //update post without image
+        $res = $post->update($dataUpload);
+
+        if (! $res) {
+            return response()->json([
+                "msg" => "failed",
+            ], 404);
+        }
+        return response()->json([
+            "msg" => "Success",
+        ], 201);
     }
 
     /**

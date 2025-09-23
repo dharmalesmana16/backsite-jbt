@@ -104,6 +104,19 @@ Route::prefix("berita")->group(function () {
         return Inertia::render('Berita/Update', ['slug' => $data]);
     });
 });
+Route::prefix("staticcontent")->group(function () {
+    Route::get('/create', function () {
+        return Inertia::render('Staticcontent/Create');
+    });
+    Route::get('/', function () {
+        return Inertia::render('Staticcontent/Page');
+    });
+    Route::get('/update/{slug}', function ($slug) {
+        $model = new Berita();
+        $data = $model::where("slug", "=", $slug)->first();
+        return Inertia::render('Staticcontent/Update', ['slug' => $data]);
+    });
+});
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

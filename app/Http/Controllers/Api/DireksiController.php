@@ -33,7 +33,7 @@ class DireksiController extends Controller
     {
         $nama = $request->nama;
         $tempat_lahir = $request->tempat_lahir;
-        $tanggal_lahir = $request->tanggal_lahir;
+        $tanggal_lahir = $request->tgl_lahir;
         $tipe_direksi = $request->tipe_direksi;
         $jabatan = $request->jabatan;
         $slug      = Str::slug($nama);
@@ -46,7 +46,7 @@ class DireksiController extends Controller
             "jabatan"      => $jabatan,
             "slug"      => $slug,
         ];
-        if ($request->has('file')) {
+        if ($request->file('file')) {
             $file = $request->file;
             $namaFile = Str::slug($nama) . "-" . $tipe_direksi . "-" . date("dmY") . "-" . time() . "." . $request->file->getClientOriginalExtension();
             // Storage::disk('public')->put($namaFile, file_get_contents($request->file));
@@ -93,7 +93,7 @@ class DireksiController extends Controller
         $post = $this->data::where('slug', '=', $slug)->first();
         $nama = $request->nama;
         $tempat_lahir = $request->tempat_lahir;
-        $tanggal_lahir = $request->tanggal_lahir;
+        $tanggal_lahir = $request->tgl_lahir;
         $tipe_direksi = $request->tipe_direksi;
         $jabatan = $request->jabatan;
         $slug      = Str::slug($nama);
