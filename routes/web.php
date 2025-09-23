@@ -106,15 +106,15 @@ Route::prefix("berita")->group(function () {
 });
 Route::prefix("staticcontent")->group(function () {
     Route::get('/create', function () {
-        return Inertia::render('Staticcontent/Create');
+        return Inertia::render('static_content/Create');
     });
     Route::get('/', function () {
-        return Inertia::render('Staticcontent/Page');
+        return Inertia::render('static_content/Page');
     });
     Route::get('/update/{slug}', function ($slug) {
         $model = new Berita();
         $data = $model::where("slug", "=", $slug)->first();
-        return Inertia::render('Staticcontent/Update', ['slug' => $data]);
+        return Inertia::render('static_content/Update', ['slug' => $data]);
     });
 });
 

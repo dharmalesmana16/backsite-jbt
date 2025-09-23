@@ -11,7 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('tb_static_content', function (Blueprint $table) {
+            $table->id()->autoIncrement();
+            $table->binary("cover")->nullable();
+            $table->binary("bg_color")->nullable();
+            $table->binary("text_header")->nullable();
+            $table->string("text_sub_header")->nullable();
+            $table->timestampsTz();
+        });
     }
 
     /**
