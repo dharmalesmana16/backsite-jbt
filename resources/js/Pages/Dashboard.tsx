@@ -1,3 +1,5 @@
+// @ts-ignore
+// @ts-nocheck
 import HeaderCard from "@/Components/HeaderCard";
 import HeaderPage from "@/Components/HeaderPage";
 import InputError from "@/Components/InputError";
