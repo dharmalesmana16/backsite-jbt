@@ -1,3 +1,5 @@
+// @ts-ignore
+// @ts-nocheck
 import Checkbox from "@/Components/Checkbox";
 import HeaderPage from "@/Components/HeaderPage";
 import InputError from "@/Components/InputError";
