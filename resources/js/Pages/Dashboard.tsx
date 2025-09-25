@@ -1,3 +1,4 @@
+import HeaderCard from "@/Components/HeaderCard";
 import HeaderPage from "@/Components/HeaderPage";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
@@ -49,7 +50,7 @@ export default function Dashboard({ dataPerusahaan }: any) {
         nama_file_carousel: "",
         file_carousel: "",
     });
-    console.log(data.nama_perusahaan);
+    // console.log(data.nama_perusahaan);
 
     const onUpdateResourceCompany: FormEventHandler = (e) => {
         e.preventDefault();
@@ -443,138 +444,49 @@ export default function Dashboard({ dataPerusahaan }: any) {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="bg-white p-5 shadow-xl rounded-xl mt-2">
-                                    <div className="judul">
-                                        <p className="font-bold text-md leading-normal">
-                                            Struktur Organisasi
-                                        </p>
-                                        <div className="">
-                                            <form
-                                                action=""
-                                                onSubmit={
-                                                    onUpdateResourceCompany
-                                                }
-                                            >
-                                                <div className="mt-4  block p-4">
-                                                    <label htmlFor="imageSo">
-                                                        <p className="block text-sm text-gray-700 font-bold">
-                                                            Gambar
-                                                        </p>
-                                                        <img
-                                                            src={
-                                                                previewStrukturOrganisasi
-                                                                    ? previewStrukturOrganisasi
-                                                                    : `/storage/image/resourcecompany/${dataPerusahaan.struktur_organisasi}`
-                                                            }
-                                                            className="w-full h-[275px] mx-auto cursor-pointer"
-                                                        />
-                                                    </label>
-                                                    {/* <input type="file" name="" id="" /> */}
-                                                    <input
-                                                        type="file"
-                                                        name="previewImgStrukturOrganisasi"
-                                                        id="imageSo"
-                                                        style={{
-                                                            display: "none",
-                                                        }}
-                                                        onChange={
-                                                            onPreviewStruktur
-                                                        }
-                                                    />
-                                                </div>
-                                                <div className="mt-4 flex items-center justify-end">
-                                                    <PrimaryButton
-                                                        className="ms-4"
-                                                        disabled={processing}
-                                                    >
-                                                        Update Data
-                                                    </PrimaryButton>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
-                        <div className=" gap-4 py-5">
-                            {/* Struktur Organisasi */}
-                            <div className="bg-white p-5 shadow-xl rounded-xl col-span-2">
-                                <p className="font-bold text-md leading-normal">
-                                    Informasi Carousel (Tampilan Dibawah Tarif
-                                    pada Web)
-                                </p>
-                                <div className="max-w-3xl mx-auto">
-                                    <DataCarousel />
-                                </div>
+                        <div className="grid grid-cols-2 gap-4 py-5 ">
+                            {/* Informasi Carousel */}
+
+                            <div className="bg-white p-5 shadow-xl rounded-xl mt-2">
                                 <div className="judul">
+                                    <p className="font-bold text-md leading-normal">
+                                        Struktur Organisasi
+                                    </p>
                                     <div className="">
                                         <form
                                             action=""
-                                            onSubmit={onCreateCarousel}
+                                            onSubmit={
+                                                onUpdateResourceCompany
+                                            }
                                         >
                                             <div className="mt-4  block p-4">
-                                                <label htmlFor="imageCarousel">
+                                                <label htmlFor="imageSo">
                                                     <p className="block text-sm text-gray-700 font-bold">
                                                         Gambar
                                                     </p>
-                                                    {previewCarousel == null ? (
-                                                        <div className="p-20 border-2 border-gray-200 border-dashed cursor-pointer w-full h-72">
-                                                            <p className="text-gray-500 text-lg text-center mx-auto my-auto">
-                                                                + Img
-                                                            </p>
-                                                        </div>
-                                                    ) : (
-                                                        <img
-                                                            src={
-                                                                previewCarousel
-                                                            }
-                                                            style={{
-                                                                objectFit:
-                                                                    "fill",
-                                                            }}
-                                                            className="w-full h-72 mx-auto cursor-pointer"
-                                                        />
-                                                    )}
+                                                    <img
+                                                        src={
+                                                            previewStrukturOrganisasi
+                                                                ? previewStrukturOrganisasi
+                                                                : `/storage/image/resourcecompany/${dataPerusahaan.struktur_organisasi}`
+                                                        }
+                                                        className="w-full h-[275px] mx-auto cursor-pointer"
+                                                    />
                                                 </label>
                                                 {/* <input type="file" name="" id="" /> */}
                                                 <input
                                                     type="file"
                                                     name="previewImgStrukturOrganisasi"
-                                                    id="imageCarousel"
-                                                    style={{ display: "none" }}
-                                                    onChange={onPreviewCarousel}
-                                                />
-                                            </div>
-                                            <div className="">
-                                                <InputLabel
-                                                    htmlFor="nama_file_carousel"
-                                                    value="Nama / Identitas Carousel"
-                                                    className="font-bold"
-                                                />
-                                                <NoteLabel value="Masukkan Alamat Perusahaan" />
-                                                <TextInput
-                                                    id="nama_file_carousel"
-                                                    type="text"
-                                                    name="nama_file_carousel"
-                                                    value={
-                                                        data.nama_file_carousel
+                                                    id="imageSo"
+                                                    style={{
+                                                        display: "none",
+                                                    }}
+                                                    onChange={
+                                                        onPreviewStruktur
                                                     }
-                                                    className="mt-1 block w-full"
-                                                    autoComplete="username"
-                                                    isFocused={true}
-                                                    onChange={(e) =>
-                                                        setData(
-                                                            "nama_file_carousel",
-                                                            e.target.value
-                                                        )
-                                                    }
-                                                />
-
-                                                <InputError
-                                                    message={
-                                                        errors.nama_file_carousel
-                                                    }
-                                                    className="mt-2"
                                                 />
                                             </div>
                                             <div className="mt-4 flex items-center justify-end">
@@ -582,12 +494,18 @@ export default function Dashboard({ dataPerusahaan }: any) {
                                                     className="ms-4"
                                                     disabled={processing}
                                                 >
-                                                    Tambah Data
+                                                    Update Data
                                                 </PrimaryButton>
                                             </div>
                                         </form>
                                     </div>
                                 </div>
+                            </div>
+                             <div className="bg-white p-5 shadow-xl rounded-xl ">
+                                <HeaderCard pageName="Informasi Carousel" link="/carousel" linkName="Edit Carousel" />
+
+                                    <DataCarousel />
+
                             </div>
                             {/* End Informasi Perusahaan */}
                         </div>

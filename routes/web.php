@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Prestasi;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Berita;
+use App\Models\Carousel;
 use App\Models\Direksi;
 use App\Models\InformasiPerusahaan;
 use App\Models\Prestasi as ModelsPrestasi;
@@ -112,12 +113,31 @@ Route::prefix("staticcontent")->group(function () {
     Route::get('/', function () {
         $dataBerita = new Staticcontent();
         $data = [
-            "dataBerita" => $dataBerita::where("judul_static_content", "=", "informasi-berita")->first()
+            "dataBerita" => $dataBerita::where("judul_static_content", "=", "informasi-berita")->first(),
+            "dataTender" => $dataBerita::where("judul_static_content", "=", "informasi-tender")->first()
         ];
         return Inertia::render('static_content/Page', $data);
     });
     Route::get('/update/{slug}', function ($slug) {
         $model = new Berita();
+        $data = $model::where("slug", "=", $slug)->first();
+        return Inertia::render('static_content/Update', ['slug' => $data]);
+    });
+});
+Route::prefix("carousel")->group(function () {
+    Route::get('/create', function () {
+        return Inertia::render('Carousel/Create');
+    });
+    Route::get('/', function () {
+        // $dataBerita = new Staticcontent();
+        // $data = [
+        //     "dataBerita" => $dataBerita::where("judul_static_content", "=", "informasi-berita")->first(),
+        //     // "dataTender" => $dataBerita::where("judul_static_content", "=", "informasi-tender")->first()
+        // ];
+        return Inertia::render('Carousel/Page' );
+    });
+    Route::get('/update/{slug}', function ($slug) {
+        $model = new Carousel();
         $data = $model::where("slug", "=", $slug)->first();
         return Inertia::render('static_content/Update', ['slug' => $data]);
     });
