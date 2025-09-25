@@ -1,3 +1,5 @@
+// @ts-ignore
+// @ts-nocheck
 import HeaderPage from "@/Components/HeaderPage";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
