@@ -214,13 +214,7 @@ export default function Update({ slug }: any) {
                                                 />
                                                 <NoteLabel value="Masukkan Tanggal Lahir (Opsional)" />
                                                 <Datepicker
-                                                    value={
-                                                        data.tgl_lahir == null
-                                                            ? new Date(
-                                                                  slug.tgl_lahir
-                                                              )
-                                                            : data.tgl_lahir
-                                                    }
+
                                                     onChange={handleDateChange}
                                                     className="text-gray-900"
                                                     style={{

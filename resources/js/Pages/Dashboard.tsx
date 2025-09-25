@@ -172,20 +172,15 @@ export default function Dashboard({ dataPerusahaan }: any) {
                                                     className="mt-1 block w-full"
                                                     autoComplete="username"
                                                     isFocused={true}
-                                                    onChange={(e) =>
-                                                        setData(
-                                                            "video",
-                                                            e.target.files[0]
-                                                        )
-                                                    }
+                                                    // onChange={(e) =>
+                                                    //     setData(
+                                                    //         "video",
+                                                    //         e.target.files[0]
+                                                    //     )
+                                                    // }
                                                 />
 
-                                                <InputError
-                                                    message={
-                                                        errors.alamat_perusahaan
-                                                    }
-                                                    className="mt-2"
-                                                />
+
                                             </div>
                                         </div>
                                     </div>
