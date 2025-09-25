@@ -11,7 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('tb_config_web', function (Blueprint $table) {
+            $table->id()->autoIncrement();
+            $table->string("bg_color_nav")->nullable();
+            $table->string("bg_color_footer")->nullable();
+            $table->string("text_color_nav")->nullable();
+            $table->string("text_color_footer")->nullable();
+            $table->string("text_color_header")->nullable();
+            $table->string("text_color_sub_header")->nullable();
+            $table->timestampsTz();
+        });
     }
 
     /**

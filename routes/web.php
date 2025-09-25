@@ -9,6 +9,7 @@ use App\Models\Direksi;
 use App\Models\InformasiPerusahaan;
 use App\Models\Prestasi as ModelsPrestasi;
 use App\Models\Saham;
+use App\Models\Staticcontent;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -109,7 +110,11 @@ Route::prefix("staticcontent")->group(function () {
         return Inertia::render('static_content/Create');
     });
     Route::get('/', function () {
-        return Inertia::render('static_content/Page');
+        $dataBerita = new Staticcontent();
+        $data = [
+            "dataBerita" => $dataBerita::where("judul_static_content", "=", "informasi-berita")->first()
+        ];
+        return Inertia::render('static_content/Page', $data);
     });
     Route::get('/update/{slug}', function ($slug) {
         $model = new Berita();

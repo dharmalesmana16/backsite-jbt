@@ -17,13 +17,7 @@ export default function Dashboard({ dataPerusahaan }: any) {
     const [previewStrukturOrganisasi, setPreviewStrukturOrganisasi] =
         useState<any>(null);
     const [previewCarousel, setPreviewCarousel] = useState<any>(null);
-    function onPreviewLogo(e: any) {
-        let dataImage = e.target.files[0];
-        if (dataImage) {
-            setData("logo", dataImage);
-            setPreviewLogo(URL.createObjectURL(dataImage));
-        }
-    }
+
     function onPreviewStruktur(e: any) {
         let dataimages = e.target.files[0];
         if (dataimages) {
@@ -125,7 +119,13 @@ export default function Dashboard({ dataPerusahaan }: any) {
                 }, 1000);
             });
     };
-
+    function onPreviewLogo(e: any) {
+        let dataImage = e.target.files[0];
+        if (dataImage) {
+            setData("logo", dataImage);
+            setPreviewLogo(URL.createObjectURL(dataImage));
+        }
+    }
     return (
         <>
             <Head title="Home" />

@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tb_static_content', function (Blueprint $table) {
+        Schema::create('tb_header_menu', function (Blueprint $table) {
             $table->id()->autoIncrement();
             $table->binary("cover")->nullable();
-            $table->binary("bg_color")->nullable();
-            $table->binary("text_header")->nullable();
-            $table->string("text_sub_header")->nullable();
-            $table->string("judul_static_content")->nullable();
-            // $table->foreignId("menu_id")->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->text("text_left")->nullable();
+            $table->text("text_right")->nullable();
+            $table->string("bg_color")->nullable();
+            $table->foreignId("menu_id")->constrained()->onUpdate('cascade')->onDelete('cascade');
+
             $table->timestampsTz();
         });
     }
