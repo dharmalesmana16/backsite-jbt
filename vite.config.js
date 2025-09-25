@@ -8,6 +8,9 @@ export default defineConfig({
             input: 'resources/js/app.tsx',
             refresh: true,
         }),
+        checker({
+      typescript: true,
+    }),
         react(),
     ],
 });
