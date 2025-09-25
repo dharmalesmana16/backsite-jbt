@@ -21,7 +21,7 @@ export default function FormInformasiPerusahaan({ dataPerusahaan }: any) {
         nama_perusahaan: dataPerusahaan.nama_perusahaan,
         alamat_perusahaan: dataPerusahaan.alamat_perusahaan,
         email_perusahaan: dataPerusahaan.email_perusahaan,
-        logo: dataPerusahaan.logo,
+        logo: "",
         deskripsi: dataPerusahaan.deskripsi,
         url_maps: dataPerusahaan.url_maps,
         telp_kantor: dataPerusahaan.no_telp,

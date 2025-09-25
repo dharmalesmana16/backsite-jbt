@@ -137,7 +137,7 @@ export default function Create({
                                                     "nama_file",
                                                     e.target.value
                                                 );
-                                                console.log(data.tgl_lahir);
+                                                // console.log(data.tgl_lahir);
                                             }}
                                         />
 
