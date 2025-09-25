@@ -78,8 +78,51 @@ class SahamController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id) {
-        
+    public function update(Request $request, string $slug) {
+        $post = $this->data::where('slug', $slug)->first();
+
+        $nama = $request->nama;
+        $warna = $request->warna;
+        $jumlah_saham = $request->jumlah_saham;
+        $jumlah = $request->jumlah;
+        $kepemilikan = $request->kepemilikan;
+        $slug      = Str::slug($nama);
+        $dataUpload = [
+            "nama" => $nama,
+            "jumlah_saham" => $jumlah_saham,
+            "jumlah" => $jumlah,
+            "kepemilikan" => $kepemilikan,
+            "warna"      => $warna,
+            "slug"      => $slug,
+        ];
+        //check if image is not empty
+        if ($request->file('logo')) {
+
+            $exists = Storage::disk('public/image/static')->exists("{$post->logo}");
+            if ($exists) {
+                Storage::disk('public/image/saham')->delete("{$post->logo}");
+            }
+
+            $image = $request->file('logo');
+            $namaFile = $nama . date("dmY") . "-" . time() . "." . $request->logo->getClientOriginalExtension();
+
+            $image->storeAs('image/saham', $namaFile, 'public');
+            $dataUpload["logo"] = $namaFile;
+            //upload image
+            //update post with new image
+        }
+
+        //update post without image
+        $res = $post->update($dataUpload);
+
+        if (! $res) {
+            return response()->json([
+                "msg" => "failed",
+            ], 404);
+        }
+        return response()->json([
+            "msg" => "Successs",
+        ], 201);
     }
 
     /**
@@ -91,13 +134,10 @@ class SahamController extends Controller
 
         $data = $this->data::where('slug', '=', $slug)->first();
         // return response()->json(["data"=>$request->json("nama_barang")]);
-        if ($data->gambar_first || $data->gambar_second || $data->gambar_third || $data->gambar_fourth) {
-            $exists = Storage::disk('public/image/tarif')->exists("{$data->gambar_first}");
+        if ($data->logo) {
+            $exists = Storage::disk('public/image/saham')->exists("{$data->gambar_first}");
             if ($exists) {
-                Storage::disk('public/image/tarif')->delete("{$data->gambar_first}");
-                Storage::disk('public/image/tarif')->delete("{$data->gambar_second}");
-                Storage::disk('public/image/tarif')->delete("{$data->gambar_third}");
-                Storage::disk('public/image/tarif')->delete("{$data->gambar_fourth}");
+                Storage::disk('public/image/saham')->delete("{$data->gambar_first}");
             }
         }
 

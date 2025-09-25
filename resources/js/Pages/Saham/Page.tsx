@@ -42,7 +42,7 @@ export default function Page() {
                             text: "Data Berhasil Dihapus!",
                             icon: "success"
                         }).then(function () {
-                            window.location.href = "/saham";
+                            window.location.href = "/pemegangsaham";
                         });
                     }, 1000);
                 })

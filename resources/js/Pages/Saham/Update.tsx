@@ -28,7 +28,8 @@ export default function Update({slug}:any) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        axios.post("/api/saham", {
+        axios.post(`/api/saham/${slug.slug}`, {
+            _method:"PUT",
             nama: data.nama,
             warna: data.warna,
             logo: data.logo,
@@ -43,7 +44,7 @@ export default function Update({slug}:any) {
             console.log(response);
             Swal.fire({
                 title: "Sukses",
-                text: "Data Berhasi Dibuat !",
+                text: "Data Berhasi Diubah !",
                 icon: "success",
                 timer: 2000
             });

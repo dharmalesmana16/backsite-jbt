@@ -1,4 +1,6 @@
-import { defineConfig } from 'vite';
+import {
+    defineConfig
+} from 'vite';
 import laravel from 'laravel-vite-plugin';
 import react from '@vitejs/plugin-react';
 import checker from 'vite-plugin-checker';
@@ -10,8 +12,9 @@ export default defineConfig({
             refresh: true,
         }),
         checker({
-      typescript: true,
-    }),
+            typescript: true,
+
+        }),
         react(),
     ],
 });
