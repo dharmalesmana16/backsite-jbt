@@ -139,7 +139,7 @@ export default function page({ dataBerita }: any) {
                                                 value="Text Right (Sub Header)"
                                                 className="font-bold"
                                             />
-                                            <NoteLabel value="Masukkan Sub Judul Cover" />
+                                            <NoteLabel value="Masukkan Sub Judul (Sub Header)" />
                                             <TextInput
                                                 id="text_sub_header"
                                                 type="text"
