@@ -49,14 +49,14 @@ class ReportYearly extends Controller
             "slug"      => $slug,
 
         ];
-        if ($request->has('file')) {
+        if ($request->file('file')) {
             $namaFile = "file-".Str::slug($nama_file) . "-". $tahun . "-" . date("dmY") . "-" . time() . "." . $request->file->getClientOriginalExtension();
             Storage::disk('public')->put($namaFile, file_get_contents($request->file));
             $dataUpload["ext"]  = $request->file->getClientOriginalExtension();
             $dataUpload["size"] = number_format($request->file->getSize() / 1048576.2,2);
             $dataUpload["file"] = $namaFile;
         }
-        if ($request->has('file')) {
+        if ($request->file('file')) {
             $namaGambar = "cover-".Str::slug($nama_file) . "-". $tahun . "-" . date("dmY") . "-" . time() . "." . $request->file->getClientOriginalExtension();
             Storage::disk('public')->put($namaGambar, file_get_contents($request->file));
             $dataUpload["gambar"] = $namaGambar;

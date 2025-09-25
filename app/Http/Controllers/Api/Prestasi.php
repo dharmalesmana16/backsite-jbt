@@ -104,7 +104,7 @@ class Prestasi extends Controller
             $image = $request->file('file');
             $namaFile = $slug . date("dmY") . "-" . time() . "." . $request->file->getClientOriginalExtension();
 
-            $image->storeAs('image/direksi', $namaFile, 'public');
+            $image->storeAs('image/prestasi', $namaFile, 'public');
             $dataUpload["file"] = $namaFile;
             //upload image
             //update post with new image

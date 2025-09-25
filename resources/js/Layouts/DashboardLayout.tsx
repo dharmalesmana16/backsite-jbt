@@ -42,6 +42,13 @@ export default function DashboardLayout({ children }: PropsWithChildren) {
                                     </a>
                                 </div>
                                 <div className="flex items-center">
+                                    <a
+                                        href="/signout"
+                                        className="block px-4 py-2 text-sm text-white font-bold bg-red-400 rounded-xl text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
+                                        role="menuitem"
+                                    >
+                                        Sign out
+                                    </a>
                                     <div className="flex items-center ms-3">
                                         <div>
                                             <button

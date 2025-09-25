@@ -5,38 +5,48 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        try {
 
-            $username = $request->username;
-            $password = $request->password;
+ $username = $request->input('username');
+        $password = $request->input('password');
             $userData = User::where("username", $username)->first();
+        // $checking = use
+        // echo
+        if ($userData) {
 
-            if (! Hash::check($password, $userData->password)) {
+            $passVerify = $userData->password;
+            if (password_verify($password, $passVerify)) {
+
+                // echo "sukses";
+                session([
+                    'nama' => $userData->username,
+                    'isLogin' => true,
+                    // 'role' => $checkAuth->role,
+                ]);
                 return response()->json([
-                    "code"   => 0,
-                    "status" => "Login Gagal",
-                    "msg"    => "Username atau password salah !",
-                ], 400);
+                    "msg" => "Success",
+                    "code" => 1
+                ], 200);
+                // return redirect('/dashboard');
+            } else {
+                   return response()->json([
+                    "msg" => "Gagal",
+                    "code" => 3
+                ], 200);
             }
-            $generateToken = $userData->createToken($username)->plainTextToken;
-            return response()->json([
-                "code"   => 1,
-                "status" => 201,
-                "msg"    => "Login Berhasil",
-                "token"  => $generateToken,
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                "code"   => 0,
-                "status" => "Login Gagal",
-                "msg"    => "Username atau password salah !",
-            ], 404);
+        } else {
+          return response()->json([
+                    "msg" => "Gagal",
+                    "code" => 0
+                ], 200);
         }
+
+
     }
     public function pageLogin(){
             return Inertia::render('Auth/Login');
@@ -75,5 +85,14 @@ class AuthController extends Controller
                 "msg"    => $e->getMessage(),
             ], 404);
         }
+    }
+     public function logout(Request $request)
+    {
+        // Artisan::call('cache:clear');
+        $request->session()->flush(); // session_unset();
+        // Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect(url('/signin'));
     }
 }

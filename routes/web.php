@@ -20,28 +20,28 @@ Route::get('/', function () {
         "dataPerusahaan" => $dataPerusahaan::where("id", "=", "1")->first()
     ];
     return Inertia::render('Dashboard', $data);
-});
+})->middleware('checkAuth');
 Route::get('/tarif', function () {
     return Inertia::render('Tarif/Page');
-});
+})->middleware('checkAuth');
 Route::get('/tarif/create', function () {
     return Inertia::render('Tarif/Create');
-});
+})->middleware('checkAuth');
 
 Route::get('/report', function () {
     return Inertia::render('Report/Page');
-});
+})->middleware('checkAuth');
 Route::get('/report/create', function () {
     return Inertia::render('Report/Create');
-});
+})->middleware('checkAuth');
 Route::get('/berita', function () {
     return Inertia::render('Berita/Page');
-});
+})->middleware('checkAuth');
 Route::get('/berita/create', function () {
     return Inertia::render('Berita/Create');
-});
+})->middleware('checkAuth');
 
-Route::prefix("direksi")->group(function () {
+Route::prefix("direksi")->middleware('checkAuth')->group(function () {
     Route::get('/', function () {
         return Inertia::render('Direksi/Page');
     });
@@ -54,7 +54,7 @@ Route::prefix("direksi")->group(function () {
         return Inertia::render('Direksi/Update', ['slug' => $data]);
     });
 });
-Route::prefix("prestasi")->group(function () {
+Route::prefix("prestasi")->middleware('checkAuth')->group(function () {
     Route::get('/create', function () {
         return Inertia::render('Prestasi/Create');
     });
@@ -66,8 +66,8 @@ Route::prefix("prestasi")->group(function () {
         $data = $model::where("slug", "=", $slug)->first();
         return Inertia::render('Prestasi/Update', ['slug' => $data]);
     });
-});
-Route::prefix("sejarah")->group(function () {
+})->middleware('checkAuth');
+Route::prefix("sejarah")->middleware('checkAuth')->group(function () {
     Route::get('/create', function () {
         return Inertia::render('Sejarah/Create');
     });
@@ -79,8 +79,8 @@ Route::prefix("sejarah")->group(function () {
         $data = $model::where("slug", "=", $slug)->first();
         return Inertia::render('Sejarah/Update', ['slug' => $data]);
     });
-});
-Route::prefix("pemegangsaham")->group(function () {
+})->middleware('checkAuth');
+Route::prefix("pemegangsaham")->middleware('checkAuth')->group(function () {
     Route::get('/create', function () {
         return Inertia::render('Saham/Create');
     });
@@ -92,8 +92,8 @@ Route::prefix("pemegangsaham")->group(function () {
         $data = $model::where("slug", "=", $slug)->first();
         return Inertia::render('Saham/Update', ['slug' => $data]);
     });
-});
-Route::prefix("berita")->group(function () {
+})->middleware('checkAuth');
+Route::prefix("berita")->middleware('checkAuth')->group(function () {
     Route::get('/create', function () {
         return Inertia::render('Berita/Create');
     });
@@ -105,8 +105,8 @@ Route::prefix("berita")->group(function () {
         $data = $model::where("slug", "=", $slug)->first();
         return Inertia::render('Berita/Update', ['slug' => $data]);
     });
-});
-Route::prefix("staticcontent")->group(function () {
+})->middleware('checkAuth');
+Route::prefix("staticcontent")->middleware('checkAuth')->group(function () {
     Route::get('/create', function () {
         return Inertia::render('static_content/Create');
     });
@@ -123,8 +123,8 @@ Route::prefix("staticcontent")->group(function () {
         $data = $model::where("slug", "=", $slug)->first();
         return Inertia::render('static_content/Update', ['slug' => $data]);
     });
-});
-Route::prefix("carousel")->group(function () {
+})->middleware('checkAuth');
+Route::prefix("carousel")->middleware('checkAuth')->group(function () {
     Route::get('/create', function () {
         return Inertia::render('Carousel/Create');
     });
@@ -153,9 +153,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 // Route::post( 'register', [AuthController::class, 'register']);
-Route::get('signup', action: [AuthController::class, 'pageRegister']);
+Route::get('signup', [AuthController::class, 'pageRegister']);
 Route::post('signup', [AuthController::class, 'signup']);
-Route::get('signin', action: [AuthController::class, 'pageLogin']);
-Route::post('signin', action: [AuthController::class, 'login']);
+Route::get('signin', [AuthController::class, 'pageLogin']);
+Route::post('login', [AuthController::class, 'login']);
+Route::get('signout', [AuthController::class, 'logout']);
 
 // require __DIR__.'/auth.php';

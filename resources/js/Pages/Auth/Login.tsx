@@ -22,26 +22,27 @@ export default function Login({
     });
     const [isSuccess, setSuccess] = useState(2);
     const [validation, setValidation] = useState("");
-    const submit: FormEventHandler = (e) => {
+    const submit: FormEventHandler = async (e) => {
         e.preventDefault();
-        axios
-            .post("/signin", {
+        await axios
+            .post("/login", {
                 username: data.username,
                 password: data.password,
             })
             .then(function (res) {
-                console.log(res.data.code);
+                console.log(res);
                 if (res.data.code == 0) {
                     setSuccess(0);
+                    setValidation(res.data.msg);
                 }
                 setSuccess(1);
                 setValidation(res.data.msg);
-                localStorage.setItem("token", res.data.token);
-                setData("password", "");
+                // localStorage.setItem("token", res.data.token);
+                // setData("password", "");
                 setTimeout(() => {
                     window.location.href = "/";
                 }, 2000);
-            });
+            })
     };
 
     return (
@@ -53,7 +54,7 @@ export default function Login({
                     className=" p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
                     role="alert"
                 >
-                    Gagal Buat Akun, Hubungi Adminstrator
+                   {validation}
                 </div>
             ) : (
                 isSuccess == 1 && (
@@ -119,14 +120,7 @@ export default function Login({
                 </div>
 
                 <div className="mt-4 flex items-center justify-end">
-                    {canResetPassword && (
-                        <Link
-                            href={route("password.request")}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                        >
-                            Forgot your password?
-                        </Link>
-                    )}
+
 
                     <PrimaryButton className="ms-4" disabled={processing}>
                         Log in
