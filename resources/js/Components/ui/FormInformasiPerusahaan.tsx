@@ -1,3 +1,5 @@
+// @ts-ignore
+// @ts-nocheck
 import React, { FormEventHandler, useState } from 'react'
 import PrimaryButton from '../PrimaryButton'
 import HeaderPage from "@/Components/HeaderPage";
@@ -17,11 +19,11 @@ export default function FormInformasiPerusahaan({ dataPerusahaan }: any) {
     //     video: '',
     // });
 
-    const { data, setData, post, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, reset } = useForm({
         nama_perusahaan: dataPerusahaan.nama_perusahaan,
         alamat_perusahaan: dataPerusahaan.alamat_perusahaan,
         email_perusahaan: dataPerusahaan.email_perusahaan,
-        logo: "",
+        logo: dataPerusahaan.logo,
         deskripsi: dataPerusahaan.deskripsi,
         url_maps: dataPerusahaan.url_maps,
         telp_kantor: dataPerusahaan.no_telp,
@@ -133,12 +135,7 @@ export default function FormInformasiPerusahaan({ dataPerusahaan }: any) {
                                     }
                                 />
 
-                                <InputError
-                                    message={
-                                        errors.nama_perusahaan
-                                    }
-                                    className="mt-2"
-                                />
+
                             </div>
                             <div className="mt-4 block">
                                 <InputLabel
@@ -163,10 +160,7 @@ export default function FormInformasiPerusahaan({ dataPerusahaan }: any) {
                                     }
                                 />
 
-                                <InputError
-                                    message={errors.deskripsi}
-                                    className="mt-2"
-                                />
+
                             </div>
                             <div className="mt-4 block">
                                 <InputLabel
@@ -193,12 +187,7 @@ export default function FormInformasiPerusahaan({ dataPerusahaan }: any) {
                                     }
                                 />
 
-                                <InputError
-                                    message={
-                                        errors.alamat_perusahaan
-                                    }
-                                    className="mt-2"
-                                />
+
                             </div>
                             <div className="mt-4 block">
                                 <InputLabel
@@ -223,10 +212,7 @@ export default function FormInformasiPerusahaan({ dataPerusahaan }: any) {
                                     }
                                 />
 
-                                <InputError
-                                    message={errors.telp_kantor}
-                                    className="mt-2"
-                                />
+
                             </div>
                             <div className="mt-4 block">
                                 <InputLabel
@@ -251,10 +237,7 @@ export default function FormInformasiPerusahaan({ dataPerusahaan }: any) {
                                     }
                                 />
 
-                                <InputError
-                                    message={errors.call_center}
-                                    className="mt-2"
-                                />
+
                             </div>
                             <div className="mt-4 block">
                                 <InputLabel
@@ -281,12 +264,7 @@ export default function FormInformasiPerusahaan({ dataPerusahaan }: any) {
                                     }
                                 />
 
-                                <InputError
-                                    message={
-                                        errors.email_perusahaan
-                                    }
-                                    className="mt-2"
-                                />
+
                             </div>
                             <div className="mt-4 block">
                                 <InputLabel
@@ -311,10 +289,7 @@ export default function FormInformasiPerusahaan({ dataPerusahaan }: any) {
                                     }
                                 />
 
-                                <InputError
-                                    message={errors.url_maps}
-                                    className="mt-2"
-                                />
+
                             </div>
                             <div className="mt-4 flex items-center justify-end">
                                 <PrimaryButton
