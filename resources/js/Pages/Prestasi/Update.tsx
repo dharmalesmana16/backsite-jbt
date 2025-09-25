@@ -140,10 +140,7 @@ export default function Update({ slug }: any) {
                                             <NoteLabel value="Masukkan Tanggal Penerimaan Penghargaan (Opsional)" />
 
                                             <Datepicker
-                                                value={
-                                                    data.tanggal == "" &&
-                                                    new Date(slug.tanggal)
-                                                }
+                                                value={new Date(data.tanggal)}
                                                 onChange={handleDateChange}
                                                 className="text-gray-900"
                                                 style={{

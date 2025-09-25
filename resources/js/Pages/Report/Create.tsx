@@ -22,7 +22,7 @@ export default function Create({
     canResetPassword: boolean;
 }) {
     const [gambar, setGambar] = useState(null);
-    const [previewImg, setPreview] = useState(null);
+    const [previewImg, setPreview] = useState<any>(null);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         nama_file: "",
@@ -69,6 +69,13 @@ export default function Create({
         if (dataImage) {
             setData("gambar", dataImage);
             setPreview(URL.createObjectURL(dataImage));
+        }
+    }
+    function onFileChange(e: any) {
+        let dataFile = e.target.files[0];
+        if (dataFile) {
+            setData("file", dataFile);
+            // setPreview(URL.createObjectURL(dataFile));
         }
     }
 
@@ -180,12 +187,7 @@ export default function Create({
                                             className="mt-1 block w-full"
                                             autoComplete="username"
                                             isFocused={true}
-                                            onChange={(e) =>
-                                                setData(
-                                                    "file",
-                                                    e.target.files[0]
-                                                )
-                                            }
+                                            onChange={onFileChange}
                                         />
 
                                         <InputError
