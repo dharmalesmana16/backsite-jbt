@@ -101,7 +101,12 @@ export default function Update({ slug }: any) {
                                         <p className="block text-sm text-gray-700 font-bold">
                                             Cover Berita
                                         </p>
-                                        {previewImg == null ? (
+                                         <img
+                                                src={previewImg ? previewImg : `/storage/image/berita/${slug.cover}`}
+                                                style={{ objectFit: "fill" }}
+                                                className="w-full h-96 cursor-pointer"
+                                            />
+                                        {/* {previewImg == null ? (
                                             <div className="p-20 border-2 h-96 border-gray-200 border-dashed cursor-pointer">
                                                 <div className="flex justify-center items-center content-center">
                                                     <FaImage className="text-gray-500 text-xl text-center" />
@@ -113,7 +118,7 @@ export default function Update({ slug }: any) {
                                                 style={{ objectFit: "fill" }}
                                                 className="w-full h-96 cursor-pointer"
                                             />
-                                        )}
+                                        )} */}
                                     </label>
                                     {/* <input type="file" name="" id="" /> */}
                                     <input

@@ -28,11 +28,13 @@ class BeritaController extends Controller
         $nama = $request->judul;
         $deskripsi = $request->deskripsi;
         $published_on = $request->published_on;
+        $tanggal = $request->tanggal;
         $slug      = Str::slug($nama);
         $dataUpload = [
             "judul" => $nama,
             "deskripsi"      => $deskripsi,
             "published_on"      => $published_on,
+            "tanggal"      => $tanggal,
             "slug"      => $slug,
         ];
 

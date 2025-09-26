@@ -10,11 +10,12 @@ import { useForm } from "@inertiajs/react";
 import axios from "axios";
 import { Datepicker } from "flowbite-react";
 import { parse } from "path";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FormEventHandler } from "react";
 import Swal from "sweetalert2";
 import { formatDate } from "date-fns";
 import { FaImage } from "react-icons/fa6";
+import JoditEditor from "jodit-react";
 export default function Create({
     status,
     canResetPassword,
@@ -27,11 +28,22 @@ export default function Create({
     const [gambar, setGambar] = useState<any>(null);
     const [previewImg, setPreview] = useState<any>(null);
     const [secondPreviewImg, setSecondPreview] = useState<any>(null);
+    const editor = useRef(null);
+    const [content, setContent] = useState<string>('');
 
+    const configs = {
+        readonly: false,
+        height: 400,
+        toolbarButtonSize: 'middle',
+        buttons: ['bold', 'italic', 'underline', 'link', 'unlink', 'source'],
+        uploader: {
+            insertImageAsBase64URI: true,
+        },
+    };
     const { data, setData, post, processing, errors, reset } = useForm({
         judul: "",
         tanggal: "",
-        deskripsi: "",
+        deskripsi: "" as any,
         published_on: "",
         gambar: "",
         gambar_kedua: "",
@@ -54,7 +66,7 @@ export default function Create({
                     cover: data.gambar,
                     gambar_kedua: data.gambar_kedua,
                     published_on: data.published_on,
-                    deskripsi: data.deskripsi,
+                    deskripsi: content,
                     // spesifikasi: data.file_spesifikasi
                 },
                 {
@@ -164,7 +176,7 @@ export default function Create({
                             <div className="mt-4 block">
                                 <InputLabel
                                     htmlFor="nama"
-                                    value="Tarif Golongan"
+                                    value="Tanggal"
                                     className="font-bold"
                                 />
                                 <NoteLabel value="Masukkan Tanggal Berita" />
@@ -221,7 +233,7 @@ export default function Create({
                                             value={data.published_on}
                                             disabled={
                                                 published == "-" ||
-                                                published == "Belum"
+                                                    published == "Belum"
                                                     ? true
                                                     : false
                                             }
@@ -233,7 +245,7 @@ export default function Create({
                                             className={
                                                 "mt-1 block w-full " +
                                                 (published == "-" ||
-                                                published == "Belum"
+                                                    published == "Belum"
                                                     ? "bg-gray-300"
                                                     : "")
                                             }
@@ -261,17 +273,13 @@ export default function Create({
                                     className="font-bold"
                                 />
                                 <NoteLabel value="Masukkan Deskripsi (Opsional)" />
-                                <TextInput
-                                    id="deskripsi"
-                                    type="text"
-                                    name="deskripsi"
-                                    value={data.deskripsi}
-                                    className="mt-1 block w-full"
-                                    autoComplete="username"
-                                    isFocused={true}
-                                    onChange={(e) =>
-                                        setData("deskripsi", e.target.value)
-                                    }
+                                <JoditEditor
+                                    ref={editor}
+                                    value={content}
+                                    config={configs}
+                                    tabIndex={1} // tabIndex of textarea
+                                    onBlur={(newContent: string) => setContent(newContent)}
+                                    onChange={(newContent: string) => { console.log(content) }}
                                 />
 
                                 <InputError
