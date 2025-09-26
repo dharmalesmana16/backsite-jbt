@@ -59,6 +59,7 @@ export default function CardBerita(props: propsBerita) {
                         : props.judul
                     : props.judul}
             </h1>
+             <div dangerouslySetInnerHTML={{ __html: props.deskripsi }} />
             <div className="py-5">
                 <form onSubmit={props.onDelete} method="POST">
                     <input type="hidden" name="slug" value={props.slug} />
