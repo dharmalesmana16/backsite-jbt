@@ -114,7 +114,7 @@ export default function Page() {
                                                     {/* {`Rp${res.jumlah.toLocaleString("id-ID")}`} */}
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <img src='' className='h-12 w-12 ' alt={res.nama_file}/>
+                                                    <img src={`/storage/image/carousel/${res.file}`} className='h-12 w-12 ' alt={res.nama_file}/>
                                                 </td>
 
                                                 <td className="px-6 py-4">
@@ -123,7 +123,7 @@ export default function Page() {
                                                             <input type="hidden" name="slug" value={res.slug} />
                                                             <button type="submit" className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Hapus</button>
 
-                                                            <a href={`/pemegangsaham/update/${res.slug}`} className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit</a>
+                                                            <a href={`/carousel/update/${res.slug}`} className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit</a>
                                                         </form>
                                                     </div>
                                                 </td>

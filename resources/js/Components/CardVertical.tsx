@@ -23,7 +23,7 @@ export default function CardDireksi({ onDelete, slug, className = '', nama = '',
                 </Link> */}
             </div>
             <div className="">
-                <img src={`${srcImage}`} className=' mx-auto w-full' alt="" srcSet="" />
+                <img src={`${srcImage}`} className=' mx-auto h-42 md:h-42 lg:h-64' alt="" srcSet="" />
             </div>
             <div className="hover:text-main text-left">
                 <h1 className='text-gray-900  text-md md:text-md lg:text-lg font-semibold tracking-normal '> {nama}</h1>

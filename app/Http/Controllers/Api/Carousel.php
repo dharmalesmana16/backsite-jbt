@@ -76,25 +76,44 @@ class Carousel extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $slug)
     {
-        $data            = $this->data::where("slug", $request->slug)->first();
-        $data->nama_file = $request->nama_file;
-        $data->type_file = $request->type_file;
-        if ($request->hasFile("file")) {
-            $exists = Storage::disk('public')->exists("{$data->file}");
+        $post = $this->data::where('slug', '=', $slug)->first();
+        $nama = $request->nama_file;
+        $slug      = Str::slug($nama);
+
+        $dataUpload = [
+            "nama_file" => $nama,
+
+        ];
+        //check if image is not empty
+        if ($request->file('file')) {
+
+            $exists = Storage::disk('public/image/carousel')->exists("{$post->file}");
             if ($exists) {
-                Storage::disk('public')->delete("{$data->file}");
+                Storage::disk('public/image/carousel')->delete("{$post->file}");
             }
-            $namaFile = Str::slug($data->file) . "" . date("dmY") . "-" . time() . "." . $request->file->getClientOriginalExtension();
-            Storage::disk('public')->put($namaFile, file_get_contents($request->file));
-            $data->file = $namaFile;
-            $data->ext  = $request->file->getClientOriginalExtension();
-            $data->size = number_format($request->file->getSize() / 1048576.2, 2);
+
+            $image = $request->file('file');
+            $namaFile = $slug . date("dmY") . "-" . time() . "." . $request->file->getClientOriginalExtension();
+
+            $image->storeAs('image/carousel', $namaFile, 'public');
+            $dataUpload["file"] = $namaFile;
+            //upload image
+            //update post with new image
         }
-        $data->slug     = Str::slug($data->nama_file);
-        $data->is_shown = $request->is_shown;
-        $data->save();
+
+        //update post without image
+        $res = $post->update($dataUpload);
+
+        if (! $res) {
+            return response()->json([
+                "msg" => "failed",
+            ], 404);
+        }
+        return response()->json([
+            "msg" => "Success",
+        ], 201);
     }
 
     /**

@@ -3,3 +3,10 @@
 @tailwind utilities;
 
 
+ .jodit-content ul {
+        list-style-type: disc; /* or 'circle', 'square' */
+    }
+
+    .jodit-content ol {
+        list-style-type: decimal; /* or 'lower-alpha', 'upper-roman' */
+    }

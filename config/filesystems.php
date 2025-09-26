@@ -62,6 +62,14 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'public/image/carousel' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/image/carousel'),
+            'url' => env('APP_URL') . '/storage',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
         'public/image/direksi' => [
             'driver' => 'local',
             'root' => storage_path('app/public/image/direksi'),

@@ -11,6 +11,7 @@ import DashboardLayout from "@/Layouts/DashboardLayout";
 import { useForm } from "@inertiajs/react";
 import axios from "axios";
 import Swal from "sweetalert2";
+
 export default function FormInformasiPerusahaan({ dataPerusahaan }: any) {
     const [previewLogo, setPreviewLogo] = useState<any>(null);
 

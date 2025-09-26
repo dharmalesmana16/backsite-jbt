@@ -139,7 +139,7 @@ Route::prefix("carousel")->middleware('checkAuth')->group(function () {
     Route::get('/update/{slug}', function ($slug) {
         $model = new Carousel();
         $data = $model::where("slug", "=", $slug)->first();
-        return Inertia::render('static_content/Update', ['slug' => $data]);
+        return Inertia::render('Carousel/Update', ['dataCarousel' => $data]);
     });
 });
 
