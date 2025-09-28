@@ -1,3 +1,5 @@
+// @ts-ignore
+// @ts-nocheck
 import Checkbox from "@/Components/Checkbox";
 import HeaderPage from "@/Components/HeaderPage";
 import InputError from "@/Components/InputError";
@@ -11,6 +13,7 @@ import axios from "axios";
 import { parse } from "path";
 import React, { useEffect, useState } from "react";
 import { FormEventHandler } from "react";
+import { FaSpinner } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 export default function Create({
@@ -327,7 +330,14 @@ export default function Create({
                                     className="ms-4"
                                     disabled={processing}
                                 >
-                                    Tambah Data
+                                     {
+                                                                                    isLoading == false ? (
+                                                                                        "Tambah Data"
+                                                                                    ) : (
+
+                                                                                        <FaSpinner className="fa-spin animate-spin" size={15} color="white" />
+                                                                                    )
+                                                                                }
                                 </PrimaryButton>
                             </div>
                         </form>

@@ -1,4 +1,5 @@
-import Checkbox from "@/Components/Checkbox";
+// @ts-ignore
+// @ts-nocheck
 import HeaderPage from "@/Components/HeaderPage";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
@@ -11,17 +12,19 @@ import axios from "axios";
 import { parse } from "path";
 import React, { useEffect, useState } from "react";
 import { FormEventHandler } from "react";
+import { FaSpinner } from "react-icons/fa";
 import Swal from "sweetalert2";
 
-export default function Update({slug}:any) {
+export default function Update({ slug }: any) {
     const [gambar, setGambar] = useState(null);
     const [previewImg, setPreview] = useState<any>(null);
     const [secondPreviewImg, setSecondPreview] = useState<any>(null);
     const [thirdPreviewImg, setThirdPreview] = useState<any>(null);
     const [fourthPreviewImg, setFourthPreview] = useState<any>(null);
-    const [isLoading,setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(false);
 
-    const { data, setData, post, processing, reset,errors } = useForm({
+    const { data, setData, post, processing, reset, errors } = useForm({
         nama_golongan: slug.nama,
         harga: slug.harga,
         deskripsi: slug.deskripsi,
@@ -34,13 +37,15 @@ export default function Update({slug}:any) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+                        setLoading(false);
+
         // console.log(data.nama)
         // post(route('login'), {
         //     onFinish: () => reset('stok'),
         // });
         axios
             .post(
-                "/api/tarif",
+                `/api/tarif/${slug.slug}`,
                 {
                     nama_golongan: data.nama_golongan,
                     harga: data.harga,
@@ -65,6 +70,8 @@ export default function Update({slug}:any) {
                     icon: "success",
                     timer: 2000,
                 });
+                                setLoading(false);
+
                 setTimeout(() => {
                     window.location.href = "/tarif";
                 }, 1000);
@@ -323,7 +330,14 @@ export default function Update({slug}:any) {
                                     className="ms-4"
                                     disabled={processing}
                                 >
-                                    Tambah Data
+                                    {
+                                        isLoading == false ? (
+                                            "Tambah Data"
+                                        ) : (
+
+                                            <FaSpinner className="fa-spin animate-spin" size={15} color="white" />
+                                        )
+                                    }
                                 </PrimaryButton>
                             </div>
                         </form>
