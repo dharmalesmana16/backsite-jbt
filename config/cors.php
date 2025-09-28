@@ -15,18 +15,13 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie'],
+    'paths' => ['*'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
-
+    'allowed_origins' => ['https://jasamargabalitol.co.id','http://jasamargabalitol.co.id','*','0.0.0.0','http://202.46.152.202'],
 
     'allowed_headers' => ['*'],
-
-    'exposed_headers' => [],
-
-    'max_age' => 0,
 
     'supports_credentials' => false,
 
