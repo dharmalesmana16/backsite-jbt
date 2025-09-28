@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -15,38 +14,41 @@ class BeritaController extends Controller
     {
         $this->data = new Berita();
     }
-    public function index()
+    public function index(Request $request)
     {
         $res = $this->data::all();
+        if($request->limit == "3"){
+            $this->data::limit(3)->get();
+        }
         return response()->json([
-            "msg" => "Success",
-            "data" => $res
+            "msg"  => "Success",
+            "data" => $res,
         ], 200);
     }
     public function store(Request $request)
     {
-        $nama = $request->judul;
-        $deskripsi = $request->deskripsi;
+        $nama         = $request->judul;
+        $deskripsi    = $request->deskripsi;
         $published_on = $request->published_on;
-        $tanggal = $request->tanggal;
-        $slug      = Str::slug($nama);
-        $dataUpload = [
-            "judul" => $nama,
-            "deskripsi"      => $deskripsi,
-            "published_on"      => $published_on,
+        $tanggal      = $request->tanggal;
+        $slug         = Str::slug($nama);
+        $dataUpload   = [
+            "judul"        => $nama,
+            "deskripsi"    => $deskripsi,
+            "published_on" => $published_on,
             "tanggal"      => $tanggal,
-            "slug"      => $slug,
+            "slug"         => $slug,
         ];
 
         if ($request->file('cover')) {
-            $file = $request->file('cover');
+            $file     = $request->file('cover');
             $namaFile = Str::slug($nama) . "gambar-1" . "-" . time() . "." . $request->cover->getClientOriginalExtension();
             // Storage::disk('public')->put($namaFile, file_get_contents($request->file));
             $file->storeAs('image/berita', $namaFile, 'public');
             $dataUpload["cover"] = $namaFile;
         }
         if ($request->file('gambar_kedua')) {
-            $file = $request->file('gambar_kedua');
+            $file     = $request->file('gambar_kedua');
             $namaFile = Str::slug($nama) . "gambar-2" . "-" . time() . "." . $request->gambar_kedua->getClientOriginalExtension();
             // Storage::disk('public')->put($namaFile, file_get_contents($request->file));
             $file->storeAs('image/berita', $namaFile, 'public');
@@ -79,11 +81,48 @@ class BeritaController extends Controller
      * Show the form for editing the specified resource.
      */
 
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id) {}
+    public function update(Request $request, string $slug)
+    {
+
+        $post         = $this->data::where("slug","=",$slug)->first();
+        $nama         = $request->judul;
+        $deskripsi    = $request->deskripsi;
+        $published_on = $request->published_on;
+        $tanggal      = $request->tanggal;
+        $slug         = Str::slug($nama);
+        $dataUpload   = [
+            "judul"        => $nama,
+            "deskripsi"    => $deskripsi,
+            "published_on" => $published_on,
+            "tanggal"      => $tanggal,
+            "slug"         => $slug,
+        ];
+
+        if ($request->file('cover')) {
+            $exists = Storage::disk('public/image/berita')->exists("{$post->cover}");
+            if ($exists) {
+                Storage::disk('public/image/berita')->delete("{$post->cover}");
+            }
+            $file     = $request->file('cover');
+            $namaFile = Str::slug($nama) . "gambar-1" . "-" . time() . "." . $request->cover->getClientOriginalExtension();
+            // Storage::disk('public')->put($namaFile, file_get_contents($request->file));
+            $file->storeAs('image/berita', $namaFile, 'public');
+            $dataUpload["cover"] = $namaFile;
+        }
+
+        $res = $post->update($dataUpload);
+        if (!$res) {
+            return response()->json([
+                "msg" => "failed",
+            ], 404);
+        }
+        return response()->json([
+            "msg" => "Data Berhasil Dibuat !",
+        ], 201);
+    }
 
     /**
      * Remove the specified resource from storage.

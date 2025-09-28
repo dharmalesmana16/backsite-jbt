@@ -12,21 +12,35 @@ import { useForm } from "@inertiajs/react";
 import axios from "axios";
 import { Datepicker } from "flowbite-react";
 import { parse } from "path";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FormEventHandler } from "react";
 import Swal from "sweetalert2";
 import { formatDate } from "date-fns";
-import { FaImage } from "react-icons/fa6";
+import { FaImage, FaSpinner } from "react-icons/fa6";
+import JoditEditor from "jodit-react";
+
 export default function Update({ slug }: any) {
     const [published, setPublished] = useState<any>("-");
     const [dangerPublished, setDangerPublished] = useState<boolean>(false);
     const [gambar, setGambar] = useState<any>(null);
     const [previewImg, setPreview] = useState<any>(null);
     const [secondPreviewImg, setSecondPreview] = useState<any>(null);
+    const [content, setContent] = useState<string>(slug.deskripsi);
+    const [isLoading, setLoading] = useState<boolean>(false);
+    const editor = useRef(null);
+    const configs = {
+        readonly: false,
+        height: 400,
 
+        toolbarButtonSize: 'middle',
+        buttons: ['bold', 'italic', 'underline', 'link', 'unlink', 'source', 'font'],
+        uploader: {
+            insertImageAsBase64URI: true,
+        },
+    };
     const { data, setData, post, processing, errors, reset } = useForm({
         judul: slug.judul,
-        tanggal: slug.judul,
+        tanggal: slug.tanggal,
         deskripsi: slug.deskripsi,
         published_on: slug.published_on,
         gambar: slug.gambar,
@@ -35,20 +49,22 @@ export default function Update({ slug }: any) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+        setLoading(true);
         // console.log(data.nama)
         // post(route('login'), {
         //     onFinish: () => reset('stok'),
         // });
         axios
             .post(
-                "/api/berita",
+                `/api/berita/${slug.slug}`,
                 {
+                     _method: "PUT",
                     judul: data.judul,
                     tanggal: data.tanggal,
                     cover: data.gambar,
                     gambar_kedua: data.gambar_kedua,
                     published_on: data.published_on,
-                    deskripsi: data.deskripsi,
+                    deskripsi: content,
                     // spesifikasi: data.file_spesifikasi
                 },
                 {
@@ -58,13 +74,14 @@ export default function Update({ slug }: any) {
                 }
             )
             .then(function (response) {
-                console.log(response);
+                // console.log(response);
                 Swal.fire({
                     title: "Sukses",
-                    text: "Data Berhasi Dibuat !",
+                    text: "Data Berhasi Diubah !",
                     icon: "success",
                     timer: 2000,
                 });
+                setLoading(false);
                 setTimeout(() => {
                     window.location.href = "/berita";
                 }, 1000);
@@ -101,11 +118,11 @@ export default function Update({ slug }: any) {
                                         <p className="block text-sm text-gray-700 font-bold">
                                             Cover Berita
                                         </p>
-                                         <img
-                                                src={previewImg ? previewImg : `/storage/image/berita/${slug.cover}`}
-                                                style={{ objectFit: "fill" }}
-                                                className="w-full h-96 cursor-pointer"
-                                            />
+                                        <img
+                                            src={previewImg ? previewImg : `/storage/image/berita/${slug.cover}`}
+                                            style={{ objectFit: "fill" }}
+                                            className="w-full h-96 cursor-pointer"
+                                        />
                                         {/* {previewImg == null ? (
                                             <div className="p-20 border-2 h-96 border-gray-200 border-dashed cursor-pointer">
                                                 <div className="flex justify-center items-center content-center">
@@ -220,7 +237,7 @@ export default function Update({ slug }: any) {
                                             value={data.published_on}
                                             disabled={
                                                 published == "-" ||
-                                                published == "Belum"
+                                                    published == "Belum"
                                                     ? true
                                                     : false
                                             }
@@ -232,7 +249,7 @@ export default function Update({ slug }: any) {
                                             className={
                                                 "mt-1 block w-full " +
                                                 (published == "-" ||
-                                                published == "Belum"
+                                                    published == "Belum"
                                                     ? "bg-gray-300"
                                                     : "")
                                             }
@@ -260,7 +277,7 @@ export default function Update({ slug }: any) {
                                     className="font-bold"
                                 />
                                 <NoteLabel value="Masukkan Deskripsi (Opsional)" />
-                                <TextInput
+                                {/* <TextInput
                                     id="deskripsi"
                                     type="text"
                                     name="deskripsi"
@@ -271,8 +288,15 @@ export default function Update({ slug }: any) {
                                     onChange={(e) =>
                                         setData("deskripsi", e.target.value)
                                     }
+                                /> */}
+                                <JoditEditor
+                                    ref={editor}
+                                    value={content}
+                                    config={configs}
+                                    tabIndex={1} // tabIndex of textarea
+                                    onBlur={(newContent: string) => setContent(newContent)}
+                                    onChange={(newContent: string) => { console.log(content) }}
                                 />
-
                                 <InputError
                                     message={errors.deskripsi}
                                     className="mt-2"
@@ -284,7 +308,14 @@ export default function Update({ slug }: any) {
                                     className="ms-4"
                                     disabled={processing}
                                 >
-                                    Tambah Data
+                                    {
+                                        isLoading == false ? (
+                                            "Tambah Data"
+                                        ) : (
+
+                                            <FaSpinner className="fa-spin animate-spin" size={15} color="white" />
+                                        )
+                                    }
                                 </PrimaryButton>
                             </div>
                         </form>

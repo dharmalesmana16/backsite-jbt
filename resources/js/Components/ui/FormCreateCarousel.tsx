@@ -1,3 +1,5 @@
+// @ts-ignore
+// @ts-nocheck
 import { useForm } from '@inertiajs/react';
 import axios from 'axios';
 import React, { FormEventHandler, useState } from 'react'

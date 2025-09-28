@@ -13,28 +13,23 @@ import React, { useEffect, useState } from "react";
 import { FormEventHandler } from "react";
 import Swal from "sweetalert2";
 
-export default function Update({
-    status,
-    canResetPassword,
-}: {
-    status?: string;
-    canResetPassword: boolean;
-}) {
+export default function Update({slug}:any) {
     const [gambar, setGambar] = useState(null);
     const [previewImg, setPreview] = useState<any>(null);
     const [secondPreviewImg, setSecondPreview] = useState<any>(null);
     const [thirdPreviewImg, setThirdPreview] = useState<any>(null);
     const [fourthPreviewImg, setFourthPreview] = useState<any>(null);
+    const [isLoading,setLoading] = useState(false);
 
-    const { data, setData, post, processing, errors, reset } = useForm({
-        nama_golongan: "",
-        harga: "",
-        deskripsi: "",
+    const { data, setData, post, processing, reset,errors } = useForm({
+        nama_golongan: slug.nama,
+        harga: slug.harga,
+        deskripsi: slug.deskripsi,
         gambar: "",
         gambar_kedua: "",
         gambar_ketiga: "",
         gambar_keempat: "",
-        remember: false as boolean,
+        // remember: false as boolean,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -116,7 +111,7 @@ export default function Update({
                                         <p className="block text-sm text-gray-700 font-bold">
                                             Gambar
                                         </p>
-                                        {previewImg == null ? (
+                                        {slug.gambar_first == null ? (
                                             <div className="p-20 border-2 border-gray-200 border-dashed cursor-pointer">
                                                 <p className="text-gray-500 text-lg text-center">
                                                     + Img
@@ -124,9 +119,9 @@ export default function Update({
                                             </div>
                                         ) : (
                                             <img
-                                                src={previewImg}
+                                                src={previewImg ? previewImg : `http://202.46.152.202:8001/storage/image/tarif/${slug.gambar_first}`}
                                                 style={{ objectFit: "fill" }}
-                                                className="w-36 h-36 cursor-pointer"
+                                                className="w-36 h-36 mx-auto  cursor-pointer"
                                             />
                                         )}
                                     </label>
@@ -321,24 +316,7 @@ export default function Update({
                                     className="mt-2"
                                 />
                             </div>
-                            <div className="mt-4 block">
-                                <label className="flex items-center">
-                                    <Checkbox
-                                        name="remember"
-                                        checked={data.remember}
-                                        onChange={(e) =>
-                                            setData(
-                                                "remember",
-                                                (e.target.checked ||
-                                                    false) as false
-                                            )
-                                        }
-                                    />
-                                    <span className="ms-2 text-sm text-gray-600">
-                                        Remember me
-                                    </span>
-                                </label>
-                            </div>
+
 
                             <div className="mt-4 flex items-center justify-end">
                                 <PrimaryButton

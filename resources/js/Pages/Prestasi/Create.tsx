@@ -14,6 +14,7 @@ import { FormEventHandler } from "react";
 import { Datepicker } from "flowbite-react";
 import { formatDate } from "date-fns";
 import Swal from "sweetalert2";
+import { FaSpinner } from "react-icons/fa";
 
 export default function Create({
     status,
@@ -24,6 +25,7 @@ export default function Create({
 }) {
     const [gambar, setGambar] = useState(null);
     const [previewImg, setPreview] = useState<any>(null);
+    const [isLoading, setLoading] = useState(false);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         nama: "",
@@ -206,7 +208,14 @@ export default function Create({
                                             className="ms-4"
                                             disabled={processing}
                                         >
-                                            Tambah Data
+                                            {
+                                                isLoading == false ? (
+                                                    "Tambah Data"
+                                                ) : (
+
+                                                    <FaSpinner className="fa-spin animate-spin" size={15} color="white" />
+                                                )
+                                            }
                                         </PrimaryButton>
                                     </div>
                                 </div>

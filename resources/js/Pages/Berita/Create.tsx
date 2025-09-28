@@ -16,7 +16,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { FormEventHandler } from "react";
 import Swal from "sweetalert2";
 import { formatDate } from "date-fns";
-import { FaImage } from "react-icons/fa6";
+import { FaImage, FaSpinner } from "react-icons/fa6";
 import JoditEditor from "jodit-react";
 export default function Create({
     status,
@@ -30,14 +30,15 @@ export default function Create({
     const [gambar, setGambar] = useState<any>(null);
     const [previewImg, setPreview] = useState<any>(null);
     const [secondPreviewImg, setSecondPreview] = useState<any>(null);
-    const editor = useRef(null);
     const [content, setContent] = useState<string>('');
-
+    const [isLoading,setLoading] = useState(false);
+    const editor = useRef(null);
     const configs = {
         readonly: false,
         height: 400,
+
         toolbarButtonSize: 'middle',
-        buttons: ['bold', 'italic', 'underline', 'link', 'unlink', 'source'],
+        buttons: ['bold', 'italic', 'underline', 'link', 'unlink', 'source','font'],
         uploader: {
             insertImageAsBase64URI: true,
         },
@@ -50,11 +51,12 @@ export default function Create({
         gambar: "",
         gambar_kedua: "",
 
-        remember: false as boolean,
+        // remember: false as boolean,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+        setLoading(true);
         // console.log(data.nama)
         // post(route('login'), {
         //     onFinish: () => reset('stok'),
@@ -79,12 +81,14 @@ export default function Create({
             )
             .then(function (response) {
                 console.log(response);
+
                 Swal.fire({
                     title: "Sukses",
                     text: "Data Berhasi Dibuat !",
                     icon: "success",
                     timer: 2000,
                 });
+                setLoading(false);
                 setTimeout(() => {
                     window.location.href = "/berita";
                 }, 1000);
@@ -289,31 +293,21 @@ export default function Create({
                                     className="mt-2"
                                 />
                             </div>
-                            <div className="mt-4 block">
-                                <label className="flex items-center">
-                                    <Checkbox
-                                        name="remember"
-                                        checked={data.remember}
-                                        onChange={(e) =>
-                                            setData(
-                                                "remember",
-                                                (e.target.checked ||
-                                                    false) as false
-                                            )
-                                        }
-                                    />
-                                    <span className="ms-2 text-sm text-gray-600">
-                                        Remember me
-                                    </span>
-                                </label>
-                            </div>
+
 
                             <div className="mt-4 flex items-center justify-end">
                                 <PrimaryButton
                                     className="ms-4"
                                     disabled={processing}
                                 >
-                                    Tambah Data
+                                     {
+                                        isLoading == false ? (
+                                            "Tambah Data"
+                                        ):(
+
+                                            <FaSpinner className="fa-spin animate-spin" size={15} color="white"/>
+                                        )
+                                    }
                                 </PrimaryButton>
                             </div>
                         </form>

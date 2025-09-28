@@ -1,3 +1,5 @@
+// @ts-ignore
+// @ts-nocheck
 import HeaderPage from "@/Components/HeaderPage";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
@@ -11,7 +13,7 @@ import React, { useState } from "react";
 import Swal from "sweetalert2";
 export default function FormConfigWeb({dataConfig}:any) {
      const [previewCoverBerita, setPreviewCoverBerita] = useState<any>(null);
-    const { data, setData, processing, errors } = useForm({
+    const { data, setData, processing } = useForm({
         bg_color_nav: dataConfig.bg_color_nav,
         bg_color_footer: dataConfig.bg_color_footer,
         text_color_nav: dataConfig.text_color_nav,
@@ -94,10 +96,7 @@ export default function FormConfigWeb({dataConfig}:any) {
                                                 }
                                             />
 
-                                            <InputError
-                                                message={errors.bg_color_nav}
-                                                className="mt-2"
-                                            />
+
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <div className="">
@@ -123,10 +122,7 @@ export default function FormConfigWeb({dataConfig}:any) {
                                                     }
                                                 />
 
-                                                <InputError
-                                                    message={errors.bg_color_footer}
-                                                    className="mt-2"
-                                                />
+
                                             </div>
                                             <div className="">
                                                 <InputLabel
@@ -153,10 +149,7 @@ export default function FormConfigWeb({dataConfig}:any) {
                                                     }
                                                 />
 
-                                                <InputError
-                                                    message={errors.text_color_nav}
-                                                    className="mt-2"
-                                                />
+
                                             </div>
                                         </div>
                                         <div className="mt-4 flex items-center justify-end">

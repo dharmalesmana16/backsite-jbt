@@ -25,6 +25,7 @@ export default function Create({
     const [secondPreviewImg, setSecondPreview] = useState<any>(null);
     const [thirdPreviewImg, setThirdPreview] = useState<any>(null);
     const [fourthPreviewImg, setFourthPreview] = useState<any>(null);
+    const [isLoading, setLoading] = useState(false);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         nama_golongan: "",
@@ -34,15 +35,11 @@ export default function Create({
         gambar_kedua: "",
         gambar_ketiga: "",
         gambar_keempat: "",
-        remember: false as boolean,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        // console.log(data.nama)
-        // post(route('login'), {
-        //     onFinish: () => reset('stok'),
-        // });
+       setLoading(true);
         axios
             .post(
                 "/api/tarif",
@@ -70,6 +67,7 @@ export default function Create({
                     icon: "success",
                     timer: 2000,
                 });
+                setLoading(false);
                 setTimeout(() => {
                     window.location.href = "/tarif";
                 }, 1000);
@@ -303,42 +301,26 @@ export default function Create({
                                     className="font-bold"
                                 />
                                 <NoteLabel value="Masukkan Deskripsi (Opsional)" />
-                                <TextInput
-                                    id="deskripsi"
-                                    type="text"
-                                    name="deskripsi"
-                                    value={data.deskripsi}
-                                    className="mt-1 block w-full"
-                                    autoComplete="username"
-                                    isFocused={true}
-                                    onChange={(e) =>
-                                        setData("deskripsi", e.target.value)
-                                    }
-                                />
 
+
+                                <textarea
+                                    onChange={(e) =>
+                                        setData(
+                                            "deskripsi",
+                                            e.target.value
+                                        )
+                                    }
+                                    id="editor"
+                                    rows={8}
+                                    className="block w-full px-2 text-sm border-1 rounded-lg  text-gray-800 bg-white border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                                    placeholder="..."
+                                ></textarea>
                                 <InputError
                                     message={errors.harga}
                                     className="mt-2"
                                 />
                             </div>
-                            <div className="mt-4 block">
-                                <label className="flex items-center">
-                                    <Checkbox
-                                        name="remember"
-                                        checked={data.remember}
-                                        onChange={(e) =>
-                                            setData(
-                                                "remember",
-                                                (e.target.checked ||
-                                                    false) as false
-                                            )
-                                        }
-                                    />
-                                    <span className="ms-2 text-sm text-gray-600">
-                                        Remember me
-                                    </span>
-                                </label>
-                            </div>
+
 
                             <div className="mt-4 flex items-center justify-end">
                                 <PrimaryButton

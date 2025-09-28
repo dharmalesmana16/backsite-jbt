@@ -64,6 +64,8 @@ export default function Page() {
                     <div className=" max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-4">
                         {dataBerita.map((res: any, idx) => (
                             <CardBerita
+                            key={idx}
+                                cover={res.cover}
                                 judul={res.judul}
                                 tanggal={res.tanggal}
                                 deskripsi={res.deskripsi}

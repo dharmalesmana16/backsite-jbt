@@ -142,15 +142,7 @@ export default function FormUpdateCarousel({dataCarousel}:any) {
  
             <div className="">
 
- <JoditEditor
-                ref={editor}
-                value={content}
-                config={config}
-                tabIndex={1} // tabIndex of textarea
-                onBlur={(newContent: string) => setContent(newContent)}
-                onChange={(newContent: string) => {}}
-                
-            />
+
             </div>
             <div className="">
                 <div style={{ marginTop: '20px' }}>

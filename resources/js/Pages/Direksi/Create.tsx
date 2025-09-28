@@ -14,6 +14,7 @@ import { FormEventHandler } from 'react';
 import { Datepicker } from "flowbite-react";
 import { formatDate } from 'date-fns'
 import Swal from 'sweetalert2'
+import { FaSpinner } from 'react-icons/fa6'
 
 export default function Create({
     status,
@@ -24,6 +25,7 @@ export default function Create({
 }) {
     const [gambar, setGambar] = useState(null);
     const [previewImg, setPreview] = useState<any>(null);
+    const [isLoading,setLoading] = useState(false);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         nama: '',
@@ -44,7 +46,7 @@ export default function Create({
     };
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
+        setLoading(false)
         axios.post("/api/direksi", {
             nama: data.nama,
             tempat_lahir: data.tempat_lahir,
@@ -66,6 +68,8 @@ export default function Create({
                 icon: "success",
                 timer: 2000
             });
+                    setLoading(true)
+
             setTimeout(() => {
                 window.location.href = "/direksi"
             }, 1000);
@@ -290,7 +294,14 @@ export default function Create({
 
 
                                         <PrimaryButton className="ms-4" disabled={processing}>
-                                            Tambah Data
+                                            {
+                                                                                    isLoading == false ? (
+                                                                                        "Tambah Data"
+                                                                                    ):(
+
+                                                                                        <FaSpinner className="fa-spin animate-spin" size={15} color="white"/>
+                                                                                    )
+                                                                                }
                                         </PrimaryButton>
                                     </div>
                                 </div>

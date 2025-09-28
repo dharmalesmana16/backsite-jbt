@@ -5,7 +5,7 @@ export type propsBerita = {
     judul: string;
     tanggal?: string;
     deskripsi: any;
-    gambar?: string;
+    cover?: string;
     published_on?: string;
     slug?: string;
     onDelete: any;
@@ -19,15 +19,15 @@ export default function CardBerita(props: propsBerita) {
     console.log(newFormat)
     return (
         <div className="flex flex-col md:w-full w-full  mx-auto">
-            <div className={props.gambar ? "" : "bg-main"}>
+            <div className={props.cover ? "" : "bg-main"}>
                 <img
                     src={
-                        props.gambar
-                            ? `/storage/image/berita/${props.gambar}`
+                        props.cover
+                            ? `/storage/image/berita/${props.cover}`
                             : "/images/berita.png"
                     }
                     className={
-                        props.gambar
+                        props.cover
                             ? "rounded-3xl w-full h-[200px] md:h-[250px]"
                             : "w-48 h-48 bg-main rounded-3xl p-3 mx-auto"
                     }
@@ -59,7 +59,11 @@ export default function CardBerita(props: propsBerita) {
                         : props.judul
                     : props.judul}
             </h1>
-             <div dangerouslySetInnerHTML={{ __html: props.deskripsi }} />
+             <div dangerouslySetInnerHTML={{ __html: props.judul
+                    ? props.deskripsi.length > 100
+                        ? `${props.deskripsi.substring(0, 95) + "..."}`
+                        : props.deskripsi
+                    : props.deskripsi }} />
             <div className="py-5">
                 <form onSubmit={props.onDelete} method="POST">
                     <input type="hidden" name="slug" value={props.slug} />

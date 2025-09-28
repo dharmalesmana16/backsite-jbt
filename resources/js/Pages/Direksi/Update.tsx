@@ -16,9 +16,11 @@ import { FormEventHandler } from "react";
 import { Datepicker } from "flowbite-react";
 import { formatDate } from "date-fns";
 import Swal from "sweetalert2";
+import { FaSpinner } from "react-icons/fa6";
 export default function Update({ slug }: any) {
     const [gambar, setGambar] = useState(null);
     const [previewImg, setPreview] = useState("");
+    const [loading, setLoading] = useState(false);
     const currentPathname = window.location.pathname;
 
     console.log(currentPathname.split("/"));
@@ -43,6 +45,7 @@ export default function Update({ slug }: any) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+                setLoading(true);
 
         axios
             .post(
@@ -75,6 +78,8 @@ export default function Update({ slug }: any) {
                     icon: "success",
                     timer: 2000,
                 });
+                                setLoading(false);
+
                 setTimeout(() => {
                     window.location.href = "/direksi";
                 }, 1000);
@@ -501,7 +506,14 @@ export default function Update({ slug }: any) {
                                             className="ms-4"
                                             disabled={processing}
                                         >
-                                            Tambah Data
+                                              {
+                                        isLoading == false ? (
+                                            "Tambah Data"
+                                        ):(
+
+                                            <FaSpinner className="fa-spin animate-spin" size={15} color="white"/>
+                                        )
+                                    }
                                         </PrimaryButton>
                                     </div>
                                 </div>

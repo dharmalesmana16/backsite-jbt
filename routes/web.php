@@ -9,8 +9,10 @@ use App\Models\Carousel;
 use App\Models\Direksi;
 use App\Models\InformasiPerusahaan;
 use App\Models\Prestasi as ModelsPrestasi;
+use App\Models\ReportYearly;
 use App\Models\Saham;
 use App\Models\Staticcontent;
+use App\Models\Tarif;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -21,19 +23,13 @@ Route::get('/', function () {
     ];
     return Inertia::render('Dashboard', $data);
 })->middleware('checkAuth');
-Route::get('/tarif', function () {
-    return Inertia::render('Tarif/Page');
-})->middleware('checkAuth');
-Route::get('/tarif/create', function () {
-    return Inertia::render('Tarif/Create');
-})->middleware('checkAuth');
 
-Route::get('/report', function () {
-    return Inertia::render('Report/Page');
-})->middleware('checkAuth');
-Route::get('/report/create', function () {
-    return Inertia::render('Report/Create');
-})->middleware('checkAuth');
+// Route::get('/report', function () {
+//     return Inertia::render('Report/Page');
+// })->middleware('checkAuth');
+// Route::get('/report/create', function () {
+//     return Inertia::render('Report/Create');
+// })->middleware('checkAuth');
 Route::get('/berita', function () {
     return Inertia::render('Berita/Page');
 })->middleware('checkAuth');
@@ -41,6 +37,32 @@ Route::get('/berita/create', function () {
     return Inertia::render('Berita/Create');
 })->middleware('checkAuth');
 
+Route::prefix("tarif")->middleware('checkAuth')->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Tarif/Page');
+    });
+    Route::get('/create', function () {
+        return Inertia::render('Tarif/Create');
+    });
+    Route::get('/update/{slug}', function ($slug) {
+        $model = new Tarif();
+        $data = $model::where("slug", "=", $slug)->first();
+        return Inertia::render('Tarif/Update', ['slug' => $data]);
+    });
+});
+Route::prefix("report")->middleware('checkAuth')->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('Report/Page');
+    });
+    Route::get('/create', function () {
+        return Inertia::render('Report/Create');
+    });
+    Route::get('/update/{slug}', function ($slug) {
+        $model = new ReportYearly();
+        $data = $model::where("slug", "=", $slug)->first();
+        return Inertia::render('Report/Update', ['slug' => $data]);
+    });
+});
 Route::prefix("direksi")->middleware('checkAuth')->group(function () {
     Route::get('/', function () {
         return Inertia::render('Direksi/Page');

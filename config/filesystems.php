@@ -102,6 +102,14 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'public/image/report' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/image/report'),
+            'url' => env('APP_URL') . '/storage',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
 
         's3' => [
             'driver' => 's3',

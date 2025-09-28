@@ -145,21 +145,22 @@ export default function FormInformasiPerusahaan({ dataPerusahaan }: any) {
                                     className="font-bold"
                                 />
                                 <NoteLabel value="Masukkan Deskripsi Perusahaan" />
-                                <TextInput
-                                    id="deskripsi"
-                                    type="text"
-                                    name="deskripsi"
-                                    value={data.deskripsi}
-                                    className="mt-1 block w-full"
-                                    autoComplete="username"
-                                    isFocused={true}
-                                    onChange={(e) =>
-                                        setData(
-                                            "deskripsi",
-                                            e.target.value
-                                        )
-                                    }
-                                />
+                                <textarea
+                                                                    value={data.deskripsi}
+
+                                                    onChange={(e) =>
+                                                        setData(
+                                                            "deskripsi",
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    id="editor"
+                                                    rows={8}
+                                                    className="block w-full px-2 rounded-lg text-sm text-gray-800 bg-white border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 "
+                                                    placeholder="..."
+
+                                                ></textarea>
+
 
 
                             </div>
