@@ -22,7 +22,6 @@ export default function Update({ slug }: any) {
     const [thirdPreviewImg, setThirdPreview] = useState<any>(null);
     const [fourthPreviewImg, setFourthPreview] = useState<any>(null);
     const [isLoading, setLoading] = useState(false);
-    const [isLoading, setLoading] = useState(false);
 
     const { data, setData, post, processing, reset, errors } = useForm({
         nama_golongan: slug.nama,
