@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://jasamargabalitol.co.id','http://jasamargabalitol.co.id','*','0.0.0.0','http://202.46.152.202'],
+    'allowed_origins' => ['https://jasamargabalitol.co.id','http://jasamargabalitol.co.id','*','0.0.0.0','http://202.46.152.202','https://202.46.152.202'],
 
     'allowed_headers' => ['*'],
 
