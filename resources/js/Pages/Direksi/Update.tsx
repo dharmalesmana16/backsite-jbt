@@ -20,7 +20,7 @@ import { FaSpinner } from "react-icons/fa6";
 export default function Update({ slug }: any) {
     const [gambar, setGambar] = useState(null);
     const [previewImg, setPreview] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(false);
     const currentPathname = window.location.pathname;
 
     console.log(currentPathname.split("/"));

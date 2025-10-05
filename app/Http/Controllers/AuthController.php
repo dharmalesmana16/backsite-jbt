@@ -33,6 +33,7 @@ class AuthController extends Controller
                     'isLogin' => true,
                     // 'role' => $checkAuth->role,
                 ]);
+                Session::put('user_id', "2");
             return response()->json([
                 "code"   => 1,
                 "status" => 201,

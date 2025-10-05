@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Berita;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -18,12 +19,12 @@ class BeritaController extends Controller
     public function index(Request $request)
     {
         $res = $this->data::all();
-        if ($request->limit == "3") {
-            $this->data::limit(3)->get();
-        }
+        // if ($request->limit == "3") {
+        //     $this->data::limit(3)->get();
+        // }
         return response()->json([
             "msg"  => "Success",
-            "data" => $res,
+            "data" => Session::get('user_id'),
         ], 200);
     }
     public function store(Request $request)
@@ -123,12 +124,14 @@ class BeritaController extends Controller
         $published_on = $request->published_on;
         $tanggal      = $request->tanggal;
         $slug         = Str::slug($nama);
+
         $dataUpload   = [
             "judul"        => $nama,
             "deskripsi"    => $deskripsi,
             "published_on" => $published_on,
             "tanggal"      => $tanggal,
             "slug"         => $slug,
+            "author_id" => Session()->get("user_id")
         ];
 
         if ($request->file('cover')) {
