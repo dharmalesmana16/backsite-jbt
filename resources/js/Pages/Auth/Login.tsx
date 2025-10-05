@@ -7,14 +7,9 @@ import GuestLayout from "@/Layouts/GuestLayout";
 import { Head, Link, useForm } from "@inertiajs/react";
 import axios from "axios";
 import { FormEventHandler, useState } from "react";
+import { FaSpinner } from "react-icons/fa6";
 
-export default function Login({
-    status,
-    canResetPassword,
-}: {
-    status?: string;
-    canResetPassword: boolean;
-}) {
+export default function Login() {
     const { data, setData, post, processing, errors, reset } = useForm({
         username: "",
         password: "",
@@ -22,49 +17,49 @@ export default function Login({
     });
     const [isSuccess, setSuccess] = useState(2);
     const [validation, setValidation] = useState("");
-    const submit: FormEventHandler = async (e) => {
+        const [isLoading, setLoading] = useState(false)
+
+    const submit: FormEventHandler = (e) => {
+
         e.preventDefault();
-        await axios
-            .post("/login", {
-                username: data.username,
-                password: data.password,
-            })
-            .then(function (res) {
-                console.log(res);
-                if (res.data.code == 0) {
-                    setSuccess(0);
-                    setValidation(res.data.msg);
-                }
-                setSuccess(1);
-                setValidation(res.data.msg);
-                // localStorage.setItem("token", res.data.token);
-                // setData("password", "");
-                setTimeout(() => {
-                    window.location.href = "/";
-                }, 2000);
-            })
+        setLoading(true);
+        axios.post('/login', {
+            username: data.username,
+            password: data.password
+        }).then(function (res) {
+            console.log(res.data.code);
+            if (res.data.code == 0) {
+                setSuccess(0)
+            }
+            setSuccess(1);
+            setValidation(res.data.msg)
+            // console.log(res.data.msg)
+            // localStorage.setItem("token", res.data.token)
+            setData("password", "")
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000);
+        }).catch(function (res) {
+            console.log(res.response.data.msg)
+            setSuccess(0)
+            setValidation(res.response.data.msg)
+            setLoading(false);
+        })
+
     };
 
     return (
         <GuestLayout>
             <Head title="Log in" />
 
-            {isSuccess == 0 ? (
-                <div
-                    className=" p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
-                    role="alert"
-                >
-                   {validation}
+            {isSuccess == 1 ? (
+                <div className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+                    {validation}
                 </div>
-            ) : (
-                isSuccess == 1 && (
-                    <div
-                        className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
-                        role="alert"
-                    >
-                        {validation}
-                    </div>
-                )
+            ) : isSuccess == 0 && (
+                <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                    {validation}
+                </div>
             )}
 
             <form onSubmit={submit}>
@@ -123,7 +118,14 @@ export default function Login({
 
 
                     <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
+                          {
+                            isLoading == false ? (
+                                "Login"
+                            ) : (
+
+                                <FaSpinner className="fa-spin animate-spin" size={15} color="white" />
+                            )
+                        }
                     </PrimaryButton>
                 </div>
             </form>

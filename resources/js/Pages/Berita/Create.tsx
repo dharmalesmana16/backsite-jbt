@@ -15,7 +15,6 @@ import { parse } from "path";
 import React, { useEffect, useRef, useState } from "react";
 import { FormEventHandler } from "react";
 import Swal from "sweetalert2";
-import { formatDate } from "date-fns";
 import { FaImage, FaSpinner } from "react-icons/fa6";
 import JoditEditor from "jodit-react";
 export default function Create({
@@ -31,14 +30,17 @@ export default function Create({
     const [previewImg, setPreview] = useState<any>(null);
     const [secondPreviewImg, setSecondPreview] = useState<any>(null);
     const [content, setContent] = useState<string>('');
-    const [isLoading,setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(false);
+
+    const [errorInput, setError] = useState({})
+
     const editor = useRef(null);
     const configs = {
         readonly: false,
         height: 400,
 
         toolbarButtonSize: 'middle',
-        buttons: ['bold', 'italic', 'underline', 'link', 'unlink', 'source','font'],
+        buttons: ['bold', 'italic', 'underline', 'link', 'unlink', 'source', 'font'],
         uploader: {
             insertImageAsBase64URI: true,
         },
@@ -80,7 +82,7 @@ export default function Create({
                 }
             )
             .then(function (response) {
-                console.log(response);
+                // console.log(response);
 
                 Swal.fire({
                     title: "Sukses",
@@ -92,7 +94,21 @@ export default function Create({
                 setTimeout(() => {
                     window.location.href = "/berita";
                 }, 1000);
-            });
+            }).catch(function (error) {
+                Swal.fire({
+                    title: "Ada Yang Salah ",
+                    text: "Periksa Input Datanya !",
+                    icon: "error",
+                    showConfirmButton: true,
+                    // timer: 1500,
+                })
+                setError(error.response.data)
+                setLoading(false)
+                // console.log(error.response.data.id_principle[0])
+                // console.log()
+            }
+
+            );
     };
     function preview(e: any) {
         let dataImage = e.target.files[0];
@@ -109,13 +125,13 @@ export default function Create({
         }
     }
     const handleDateChange = (date: any) => {
-        let newDateFormat = formatDate(date, "yyyy-MM-dd");
-        setData("tanggal", newDateFormat); // Update the state with the new date
+        setData("tanggal", new Date(date)); // Update the state with the new date
+
     };
     return (
         <div>
             <DashboardLayout>
-                <HeaderPage link="/tarif" linkName="Kembali" />
+                <HeaderPage link="/berita" linkName="Kembali" />
                 <div className="py-8 max-w-5xl mx-auto">
                     <div className="bg-white shadow-xl p-5 rounded-lg ">
                         <form onSubmit={submit}>
@@ -125,6 +141,9 @@ export default function Create({
                                         <p className="block text-sm text-gray-700 font-bold">
                                             Cover Berita
                                         </p>
+                                        <NoteLabel value="Untuk resolusi yang baik dapat menggunakan resolusi 1920 x 1080 px, Format Gambar : JPG,JPEG" />
+                                        {errorInput.cover && (<p className='mt-1 text-sm text-red-500 tracking-normal'>{errorInput.cover[0]}</p>)}
+
                                         {previewImg == null ? (
                                             <div className="p-20 border-2 h-96 border-gray-200 border-dashed cursor-pointer">
                                                 <div className="flex justify-center items-center content-center">
@@ -147,6 +166,7 @@ export default function Create({
                                         style={{ display: "none" }}
                                         onChange={preview}
                                     />
+
                                 </div>
                             </div>
                             <div className="mt-4 block">
@@ -172,10 +192,8 @@ export default function Create({
                                             }
                                         />
 
-                                        <InputError
-                                            message={errors.judul}
-                                            className="mt-2"
-                                        />
+                                        {errorInput.judul && (<p className='mt-1 text-sm text-red-500 tracking-normal'>{errorInput.judul[0]}</p>)}
+
                                     </div>
                                 </div>
                             </div>
@@ -186,17 +204,25 @@ export default function Create({
                                     className="font-bold"
                                 />
                                 <NoteLabel value="Masukkan Tanggal Berita" />
-                                <Datepicker onChange={handleDateChange} />
+                                <Datepicker onChange={handleDateChange}
+                                    className="text-gray-900 "
+                                    style={{
+                                        backgroundColor: "white",
+                                        color: "black",
+                                        cursor: "pointer",
+                                    }} />
+                                {errorInput.tanggal && (<p className='mt-1 text-sm text-red-500 tracking-normal'>{errorInput.tanggal[0]}</p>)}
+
                             </div>
                             <div className="mt-4">
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="col-span-1">
                                         <InputLabel
                                             htmlFor="jabatan"
-                                            value="Tipe Direksi"
+                                            value="Publikasi Berita"
                                             className="font-bold"
                                         />
-                                        <NoteLabel value="Sudah Pernah Terpublish di Link Lain ? " />
+                                        <NoteLabel value="Sudah Pernah Terpublish di Sumber Berita Lain ? " />
                                         <select
                                             onChange={(e) =>
                                                 setPublished(e.target.value)
@@ -278,7 +304,7 @@ export default function Create({
                                     value="Deskripsi"
                                     className="font-bold"
                                 />
-                                <NoteLabel value="Masukkan Deskripsi (Opsional)" />
+                                <NoteLabel value="Baiknya deskripsi bisa dibuat di word terlebih dahulu kemudian di copy isinya ke input disini sehingga format akan mengikuti yang ada di word, kemudian pilih Font : Arial pada opsi" />
                                 <JoditEditor
                                     ref={editor}
                                     value={content}
@@ -288,10 +314,7 @@ export default function Create({
                                     onChange={(newContent: string) => { console.log(content) }}
                                 />
 
-                                <InputError
-                                    message={errors.deskripsi}
-                                    className="mt-2"
-                                />
+
                             </div>
 
 
@@ -300,12 +323,12 @@ export default function Create({
                                     className="ms-4"
                                     disabled={processing}
                                 >
-                                     {
+                                    {
                                         isLoading == false ? (
                                             "Tambah Data"
-                                        ):(
+                                        ) : (
 
-                                            <FaSpinner className="fa-spin animate-spin" size={15} color="white"/>
+                                            <FaSpinner className="fa-spin animate-spin" size={15} color="white" />
                                         )
                                     }
                                 </PrimaryButton>

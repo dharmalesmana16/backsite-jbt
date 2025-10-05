@@ -9,9 +9,13 @@ import InputError from '../InputError';
 import TextInput from '../TextInput';
 import NoteLabel from '../NoteLabel';
 import InputLabel from '../InputLabel';
+import { FaSpinner } from 'react-icons/fa';
 
 export default function FormCreateCarousel() {
     const [previewCarousel, setPreviewCarousel] = useState<any>(null);
+        const [isLoading, setLoading] = useState(false);
+    const [errorInput, setError] = useState({})
+
     const { data, setData, post, processing, errors, reset } = useForm({
 
         nama_file_carousel: "",
@@ -19,7 +23,7 @@ export default function FormCreateCarousel() {
     });
     const onCreateCarousel: FormEventHandler = (e) => {
         e.preventDefault();
-
+        setLoading(true);
         axios
             .post(
                 `/api/carousel`,
@@ -41,10 +45,25 @@ export default function FormCreateCarousel() {
                     icon: "success",
                     timer: 2000,
                 });
+                        setLoading(false);
                 setTimeout(() => {
                     window.location.href = "/carousel";
                 }, 1000);
-            });
+            }).catch(function (error) {
+                            Swal.fire({
+                                title: "Ada Yang Salah ",
+                                text: "Periksa Input Datanya !",
+                                icon: "error",
+                                showConfirmButton: true,
+                                // timer: 1500,
+                            })
+                            setError(error.response.data)
+                            setLoading(false)
+                            // console.log(error.response.data.id_principle[0])
+                            // console.log()
+                        }
+
+                        );
     };
     function onPreviewCarousel(e: any) {
         let dataimages = e.target.files[0];
@@ -65,6 +84,9 @@ export default function FormCreateCarousel() {
                             <p className="block text-sm text-gray-700 font-bold">
                                 Gambar
                             </p>
+                            <NoteLabel value="Untuk resolusi yang baik dapat menggunakan resolusi 1920 x 1080 px, Format Gambar : JPG,JPEG" />
+                                        {errorInput.file_carousel && (<p className='mt-1 text-sm text-red-500 tracking-normal'>{errorInput.file_carousel[0]}</p>)}
+
                             {previewCarousel == null ? (
                                 <div className="p-20 border-2 border-gray-200 border-dashed cursor-pointer w-full h-72">
                                     <p className="text-gray-500 text-lg text-center mx-auto my-auto">
@@ -130,7 +152,14 @@ export default function FormCreateCarousel() {
                             className="ms-4"
                             disabled={processing}
                         >
-                            Tambah Data
+                            {
+                                isLoading == false ? (
+                                    "Tambah Data"
+                                ) : (
+
+                                    <FaSpinner className="fa-spin animate-spin" size={15} color="white" />
+                                )
+                            }
                         </PrimaryButton>
                     </div>
                 </form>

@@ -13,10 +13,7 @@ export type propsBerita = {
 };
 
 export default function CardBerita(props: propsBerita) {
-      const date = new Date()
-      let tanggal = new Date(date);
-    let newFormat = tanggal.toLocaleDateString('en-US');
-    console.log(newFormat)
+
     return (
         <div className="flex flex-col md:w-full w-full  mx-auto">
             <div className={props.cover ? "" : "bg-main"}>
@@ -37,7 +34,7 @@ export default function CardBerita(props: propsBerita) {
             </div>
             <div className="flex flex-col md:flex-row md:justify-between mt-5">
                 <div className="bg-second p-2 rounded-xl w-42 text-center">
-                    <p className='text-gray-950 font-normal text-sm tracking-normal'>{newFormat}</p>
+                    <p className='text-gray-950 font-normal text-sm tracking-normal'>{props.tanggal != null ? new Date(props.tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }):"05 Oktober 2025"}</p>
                   </div>
                 {props.published_on != null ? (
                     <div className="">

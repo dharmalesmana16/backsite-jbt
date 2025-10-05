@@ -9,18 +9,20 @@ import InputError from '../InputError';
 import TextInput from '../TextInput';
 import NoteLabel from '../NoteLabel';
 import InputLabel from '../InputLabel';
-    // import { EditorSta, ContentState } from "draft-js";
+// import { EditorSta, ContentState } from "draft-js";
 import JoditEditor, { Jodit } from 'jodit-react';
 import 'jodit/es2021/jodit.min.css';
 import 'jodit/es2021/jodit.fat.min.js';
 // import 'jodit/build/jodit.min.css'
 // import "jodit/build/jodit.min.css";
-  import 'jodit/esm/plugins/all.js';
+import 'jodit/esm/plugins/all.js';
 
-export default function FormUpdateCarousel({dataCarousel}:any) {
+export default function FormUpdateCarousel({ dataCarousel }: any) {
     const [previewCarousel, setPreviewCarousel] = useState<any>(null);
-     const editor = useRef(null);
+    const editor = useRef(null);
     const [content, setContent] = useState<string>('');
+    const [errorInput, setError] = useState({})
+        const [isLoading, setLoading] = useState(false);
 
     const config = {
         readonly: false,
@@ -30,16 +32,16 @@ export default function FormUpdateCarousel({dataCarousel}:any) {
             insertImageAsBase64URI: true,
         },
         readonly: false,
-	toolbar: true,
-	spellcheck: true,
-	language: 'en',
-	toolbarButtonSize: 'medium',
-	// toolbarAdaptive: false,
-	showCharsCounter: true,
-	showWordsCounter: true,
-	showXPathInStatusbar: false,
-	askBeforePasteHTML: true,
-	askBeforePasteFromWord: true,
+        toolbar: true,
+        spellcheck: true,
+        language: 'en',
+        toolbarButtonSize: 'medium',
+        // toolbarAdaptive: false,
+        showCharsCounter: true,
+        showWordsCounter: true,
+        showXPathInStatusbar: false,
+        askBeforePasteHTML: true,
+        askBeforePasteFromWord: true,
     };
     const { data, setData, post, processing, errors, reset } = useForm({
 
@@ -53,7 +55,7 @@ export default function FormUpdateCarousel({dataCarousel}:any) {
             .post(
                 `/api/carousel/${dataCarousel.slug}`,
                 {
-                    _method:"PUT",
+                    _method: "PUT",
                     nama_file: data.nama_file,
                     file: data.file,
                 },
@@ -64,7 +66,7 @@ export default function FormUpdateCarousel({dataCarousel}:any) {
                 }
             )
             .then(function (response) {
-                console.log(response);
+                // console.log(response);
                 Swal.fire({
                     title: "Sukses",
                     text: "Data Berhasil Diubah !",
@@ -74,7 +76,21 @@ export default function FormUpdateCarousel({dataCarousel}:any) {
                 setTimeout(() => {
                     window.location.href = "/carousel";
                 }, 1000);
-            });
+            }).catch(function (error) {
+                Swal.fire({
+                    title: "Ada Yang Salah ",
+                    text: "Periksa Input Datanya !",
+                    icon: "error",
+                    showConfirmButton: true,
+                    // timer: 1500,
+                })
+                setError(error.response.data)
+                setLoading(false)
+                // console.log(error.response.data.id_principle[0])
+                // console.log()
+            }
+
+            );;
     };
     function onPreviewCarousel(e: any) {
         let dataimages = e.target.files[0];
@@ -95,16 +111,19 @@ export default function FormUpdateCarousel({dataCarousel}:any) {
                             <p className="block text-sm text-gray-700 font-bold">
                                 Gambar
                             </p>
-                             <img
-                                    src={
-                                        previewCarousel ? previewCarousel : `/storage/image/carousel/${dataCarousel.file}`
-                                    }
-                                    style={{
-                                        objectFit:
-                                            "fill",
-                                    }}
-                                    className="w-full h-72 mx-auto cursor-pointer"
-                                />
+                            <NoteLabel value="Untuk resolusi yang baik dapat menggunakan resolusi 1920 x 1080 px, Format Gambar : JPG,JPEG" />
+                                        {errorInput.file_carousel && (<p className='mt-1 text-sm text-red-500 tracking-normal'>{errorInput.file_carousel[0]}</p>)}
+
+                            <img
+                                src={
+                                    previewCarousel ? previewCarousel : `/storage/image/carousel/${dataCarousel.file}`
+                                }
+                                style={{
+                                    objectFit:
+                                        "fill",
+                                }}
+                                className="w-full h-72 mx-auto cursor-pointer"
+                            />
                         </label>
                         {/* <input type="file" name="" id="" /> */}
                         <input
@@ -139,34 +158,27 @@ export default function FormUpdateCarousel({dataCarousel}:any) {
                                 )
                             }
                         />
- 
-            <div className="">
 
 
-            </div>
-            <div className="">
-                <div style={{ marginTop: '20px' }}>
-                <h3>Content:</h3>
-                <pre>{content}</pre>
-            </div>
-            </div>
-                        <InputError
-                            message={
-                                errors.nama_file
-                            }
-                            className="mt-2"
-                        />
                     </div>
-                
-        
-        
-                            {/* </div> */}
+
+
+
+
+                    {/* </div> */}
                     <div className="mt-4 flex items-center justify-end">
                         <PrimaryButton
                             className="ms-4"
                             disabled={processing}
                         >
-                            Tambah Data
+                            {
+                                                            isLoading == false ? (
+                                                                "Update Data"
+                                                            ) : (
+
+                                                                <FaSpinner className="fa-spin animate-spin" size={15} color="white" />
+                                                            )
+                                                        }
                         </PrimaryButton>
                     </div>
                 </form>

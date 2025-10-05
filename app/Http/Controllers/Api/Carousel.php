@@ -1,10 +1,10 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class Carousel extends Controller
@@ -31,6 +31,17 @@ class Carousel extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'file_carousel'=>'mimes:jpg,jpeg',
+            // 'content'   => 'required',
+        ], [
+            'file_carousel.mimes'=>"Format yang diperbolehkan : jpg / jpeg"
+        ]);
+
+        //check if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
         $nama_file = $request->nama_file;
         $type_file = "image";
         $slug      = Str::slug($nama_file);
@@ -43,7 +54,6 @@ class Carousel extends Controller
         ];
         if ($request->file('file_carousel')) {
             $file = $request->file_carousel;
-
             $namaFile = Str::slug($nama_file) . "-carousel-" . date("dmY") . "-" . time() . "." . $request->file_carousel->getClientOriginalExtension();
             $file->storeAs('image/carousel', $namaFile, 'public');
             $dataUpload["ext"]  = $request->file_carousel->getClientOriginalExtension();
@@ -80,7 +90,7 @@ class Carousel extends Controller
     {
         $post = $this->data::where('slug', '=', $slug)->first();
         $nama = $request->nama_file;
-        $slug      = Str::slug($nama);
+        $slug = Str::slug($nama);
 
         $dataUpload = [
             "nama_file" => $nama,
@@ -94,11 +104,15 @@ class Carousel extends Controller
                 Storage::disk('public/image/carousel')->delete("{$post->file}");
             }
 
-            $image = $request->file('file');
+            $image    = $request->file('file');
             $namaFile = $slug . date("dmY") . "-" . time() . "." . $request->file->getClientOriginalExtension();
 
             $image->storeAs('image/carousel', $namaFile, 'public');
+            $dataUpload["size"] = number_format($request->file->getSize() / 1048576.2, 2);
+            $dataUpload["ext"]  = $request->file->getClientOriginalExtension();
+
             $dataUpload["file"] = $namaFile;
+
             //upload image
             //update post with new image
         }
@@ -124,9 +138,9 @@ class Carousel extends Controller
         $data = $this->data::where('slug', '=', $slug)->first();
         // return response()->json(["data"=>$request->json("nama_barang")]);
         if ($data->file) {
-            $exists = Storage::disk('public')->exists("{$data->file}");
+            $exists = Storage::disk('public/image/carousel')->exists("{$data->file}");
             if ($exists) {
-                Storage::disk('public')->delete("{$data->file}");
+                Storage::disk('public/image/carousel')->delete("{$data->file}");
             }
         }
         $data->delete();

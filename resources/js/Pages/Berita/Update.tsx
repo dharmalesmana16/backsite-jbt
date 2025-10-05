@@ -27,6 +27,8 @@ export default function Update({ slug }: any) {
     const [secondPreviewImg, setSecondPreview] = useState<any>(null);
     const [content, setContent] = useState<string>(slug.deskripsi);
     const [isLoading, setLoading] = useState<boolean>(false);
+    const [errorInput, setError] = useState({})
+
     const editor = useRef(null);
     const configs = {
         readonly: false,
@@ -58,7 +60,7 @@ export default function Update({ slug }: any) {
             .post(
                 `/api/berita/${slug.slug}`,
                 {
-                     _method: "PUT",
+                    _method: "PUT",
                     judul: data.judul,
                     tanggal: data.tanggal,
                     cover: data.gambar,
@@ -85,7 +87,21 @@ export default function Update({ slug }: any) {
                 setTimeout(() => {
                     window.location.href = "/berita";
                 }, 1000);
-            });
+            }).catch(function (error) {
+                Swal.fire({
+                    title: "Ada Yang Salah ",
+                    text: "Periksa Input Datanya !",
+                    icon: "error",
+                    showConfirmButton: true,
+                    // timer: 1500,
+                })
+                setError(error.response.data)
+                setLoading(false)
+                // console.log(error.response.data.id_principle[0])
+                // console.log()
+            }
+
+            );;
     };
     function preview(e: any) {
         let dataImage = e.target.files[0];
@@ -102,8 +118,8 @@ export default function Update({ slug }: any) {
         }
     }
     const handleDateChange = (date: any) => {
-        let newDateFormat = formatDate(date, "yyyy-MM-dd");
-        setData("tanggal", newDateFormat); // Update the state with the new date
+        // let newDateFormat = formatDate(date, "yyyy-MM-dd");
+        setData("tanggal", new Date(date)); // Update the state with the new date
     };
     return (
         <div>
@@ -118,6 +134,10 @@ export default function Update({ slug }: any) {
                                         <p className="block text-sm text-gray-700 font-bold">
                                             Cover Berita
                                         </p>
+                                        <NoteLabel value="Untuk resolusi yang baik dapat menggunakan resolusi 1920 x 1080 px, Format Gambar : JPG,JPEG" />
+
+                                        {errorInput.cover && (<p className='mt-1 text-sm text-red-500 tracking-normal'>{errorInput.cover[0]}</p>)}
+
                                         <img
                                             src={previewImg ? previewImg : `/storage/image/berita/${slug.cover}`}
                                             style={{ objectFit: "fill" }}
@@ -170,21 +190,21 @@ export default function Update({ slug }: any) {
                                             }
                                         />
 
-                                        <InputError
-                                            message={errors.judul}
-                                            className="mt-2"
-                                        />
+                                        {errorInput.judul && (<p className='mt-1 text-sm text-red-500 tracking-normal'>{errorInput.judul[0]}</p>)}
+
                                     </div>
                                 </div>
                             </div>
                             <div className="mt-4 block">
                                 <InputLabel
                                     htmlFor="nama"
-                                    value="Tarif Golongan"
+                                    value="Tanggal Berita"
                                     className="font-bold"
                                 />
                                 <NoteLabel value="Masukkan Tanggal Berita" />
                                 <Datepicker onChange={handleDateChange} />
+                                {errorInput.tanggal && (<p className='mt-1 text-sm text-red-500 tracking-normal'>{errorInput.tanggal[0]}</p>)}
+
                             </div>
                             <div className="mt-4">
                                 <div className="grid grid-cols-3 gap-4">

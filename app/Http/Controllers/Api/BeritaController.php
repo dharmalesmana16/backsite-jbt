@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Berita;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class BeritaController extends Controller
@@ -17,7 +18,7 @@ class BeritaController extends Controller
     public function index(Request $request)
     {
         $res = $this->data::all();
-        if($request->limit == "3"){
+        if ($request->limit == "3") {
             $this->data::limit(3)->get();
         }
         return response()->json([
@@ -27,6 +28,21 @@ class BeritaController extends Controller
     }
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'judul'   => 'required',
+            'tanggal' => 'required',
+            'cover'   => 'mimes:jpg,jpeg',
+            // 'content'   => 'required',
+        ], [
+            'judul.required'   => 'Nama Judul Harus diisi ya !',
+            'tanggal.required' => 'Tanggal juga wajib diisi ya !',
+            'cover.mimes'      => "Format yang diperbolehkan : jpg / jpeg",
+        ]);
+
+        //check if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
         $nama         = $request->judul;
         $deskripsi    = $request->deskripsi;
         $published_on = $request->published_on;
@@ -86,8 +102,22 @@ class BeritaController extends Controller
      */
     public function update(Request $request, string $slug)
     {
+        $validator = Validator::make($request->all(), [
+            'judul'   => 'required',
+            'tanggal' => 'required',
+            'cover'   => 'mimes:jpg,jpeg',
+            // 'content'   => 'required',
+        ], [
+            'judul.required'   => 'Nama Judul Harus diisi ya !',
+            'tanggal.required' => 'Tanggal juga wajib diisi ya !',
+            'cover.mimes'      => "Format yang diperbolehkan : jpg / jpeg",
+        ]);
 
-        $post         = $this->data::where("slug","=",$slug)->first();
+        //check if validation fails
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+        $post         = $this->data::where("slug", "=", $slug)->first();
         $nama         = $request->judul;
         $deskripsi    = $request->deskripsi;
         $published_on = $request->published_on;
@@ -114,7 +144,7 @@ class BeritaController extends Controller
         }
 
         $res = $post->update($dataUpload);
-        if (!$res) {
+        if (! $res) {
             return response()->json([
                 "msg" => "failed",
             ], 404);

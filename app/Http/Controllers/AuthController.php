@@ -9,41 +9,42 @@ use Illuminate\Support\Facades\Session;
 
 class AuthController extends Controller
 {
+
     public function login(Request $request)
     {
 
- $username = $request->input('username');
-        $password = $request->input('password');
+   try {
+
+            $username = $request->username;
+            $password = $request->password;
             $userData = User::where("username", $username)->first();
-        // $checking = use
-        // echo
-        if ($userData) {
 
-            $passVerify = $userData->password;
-            if (password_verify($password, $passVerify)) {
-
-                // echo "sukses";
-                session([
+            if (! Hash::check($password, $userData->password)) {
+                return response()->json([
+                    "code"   => 0,
+                    "status" => "Login Gagal",
+                    "msg"    => "Username atau password salah !",
+                ], 400);
+            }
+            $generateToken = $userData->createToken($username)->plainTextToken;
+             session([
                     'nama' => $userData->username,
+                    'user_id' => $userData->id,
                     'isLogin' => true,
                     // 'role' => $checkAuth->role,
                 ]);
-                return response()->json([
-                    "msg" => "Success",
-                    "code" => 1
-                ], 200);
-                // return redirect('/dashboard');
-            } else {
-                   return response()->json([
-                    "msg" => "Gagal",
-                    "code" => 3
-                ], 200);
-            }
-        } else {
-          return response()->json([
-                    "msg" => "Gagal",
-                    "code" => 0
-                ], 200);
+            return response()->json([
+                "code"   => 1,
+                "status" => 201,
+                "msg"    => "Login Berhasil",
+                "token"  => $generateToken,
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                "code"   => 0,
+                "status" => "Login Gagal",
+                "msg"    => "Username atau password salah !",
+            ], 404);
         }
 
 
