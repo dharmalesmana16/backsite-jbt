@@ -19,12 +19,12 @@ class BeritaController extends Controller
     public function index(Request $request)
     {
         $res = $this->data::all();
-        // if ($request->limit == "3") {
-        //     $this->data::limit(3)->get();
-        // }
+        if ($request->limit == "3") {
+            $this->data::limit(3)->get();
+        }
         return response()->json([
             "msg"  => "Success",
-            "data" => Session::get('user_id'),
+            "data" => $res,
         ], 200);
     }
     public function store(Request $request)
