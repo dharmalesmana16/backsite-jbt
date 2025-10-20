@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class checkAuth
+class redirectIfAuth
 {
     /**
      * Handle an incoming request.
@@ -16,10 +16,8 @@ class checkAuth
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = Auth::user(); // This will return the authenticated user model or null if not authenticated.
-
-        if (!$user) {
-            return redirect('/signin');
+        if (Auth::user()) {
+            return redirect('/');
         }
         return $next($request);
     }

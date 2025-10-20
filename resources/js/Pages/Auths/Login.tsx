@@ -30,7 +30,7 @@ export default function Login({
         e.preventDefault();
         setLoading(true);
         axios
-            .post("/signin", {
+            .post("/login", {
                 username: data.username,
                 password: data.password,
             })
@@ -41,19 +41,19 @@ export default function Login({
                 }
                 setSuccess(1);
                 setValidation(res.data.msg);
-                // console.log(res.data.msg)
-                localStorage.setItem("token", res.data.token_id.tokenable_id);
-                localStorage.setItem("username", res.data.username);
+                console.log(res.data);
+                // localStorage.setItem("token", res.data.token_id.tokenable_id);
+                // localStorage.setItem("username", res.data.username);
                 setData("password", "");
                 setTimeout(() => {
                     window.location.href = "/";
                 }, 2000);
             })
-            .catch(function (res) {
-                console.log(res.response.data.msg);
-                setSuccess(0);
-                setValidation(res.response.data.msg);
-                setLoading(false);
+            .catch(function (error) {
+                console.log(error);
+                // setSuccess(0);
+                // setValidation(res.response.data.msg);
+                // setLoading(false);
             });
     };
 

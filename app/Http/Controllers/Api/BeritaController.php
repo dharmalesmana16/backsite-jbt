@@ -20,7 +20,7 @@ class BeritaController extends Controller
     }
     public function index(Request $request)
     {
-        $res = $this->data::all();
+        $res = $this->data::orderBy("id", 'desc')->get();
         if ($request->limit == "3") {
             $this->data::limit(3)->get();
         }
