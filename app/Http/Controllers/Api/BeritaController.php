@@ -34,19 +34,20 @@ class BeritaController extends Controller
         $validator = Validator::make($request->all(), [
             'judul'   => 'required',
             'tanggal' => 'required',
-            // 'cover'   => [
-            //     'required',
-            //     'file',
-            //     'size:10000',
-            //     'mimes:jpg',
-            //     // File::image()
-            // ],
+            'cover'   => [
+                'required',
+                // 'file',
+                // 'size:10000',
+                'mimes:jpg',
+                // File::image()
+            ],
             // 'content'   => 'required',
         ], [
             'judul.required'   => 'Nama Judul Harus diisi ya !',
             'tanggal.required' => 'Tanggal juga wajib diisi ya !',
             // 'cover.required' => 'Cover Berita Harus diisi !',
-            // 'cover.mimes'      => "Format yang diperbolehkan : jpg / jpeg",
+            'cover.mimes'      => "Format yang diperbolehkan : jpg / jpeg",
+            'cover.size'        => "Size maksimum :5MB"
         ]);
 
         //check if validation fails
