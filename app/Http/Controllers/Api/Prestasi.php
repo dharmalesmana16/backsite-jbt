@@ -7,6 +7,7 @@ use App\Models\Prestasi as ModelPrestasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Validator;
 
 class Prestasi extends Controller
 {
@@ -25,6 +26,17 @@ class Prestasi extends Controller
     }
     public function store(Request $request)
     {
+         $validator = Validator::make($request->all(), [
+            'nama'   => 'required',
+            'file'   => 'mimes:png',
+            // 'content'   => 'required',
+        ], [
+            'nama.required'   => 'Nama Prestasi Harus diisi ya !',
+            'file.mimes'      => "Format yang diperbolehkan : png",
+        ]);
+         if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
         $nama = $request->nama;
         $tanggal = $request->tanggal;
         $deskripsi = $request->deskripsi;
@@ -39,8 +51,11 @@ class Prestasi extends Controller
         ];
         if ($request->has('file')) {
             $file = $request->file;
-            $namaFile = Str::slug($nama) . "-prestasi-" . date("dmY") . "-" . time() . "." . $request->file->getClientOriginalExtension();
+            $namaFile = Str::slug($nama) . "-prestasi-" . date("dmY") . "-" . time() . "." . $file->getClientOriginalExtension();
             $file->storeAs('image/prestasi', $namaFile, 'public');
+            $imageSize = getimagesize($file);
+            $dataUpload["width"] = $imageSize[0];
+            $dataUpload["height"] = $imageSize[1];
             $dataUpload["ext"]  = $request->file->getClientOriginalExtension();
             $dataUpload["size"] = number_format($request->file->getSize() / 1048576.2, 2);
             $dataUpload["file"] = $namaFile;
@@ -58,9 +73,9 @@ class Prestasi extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $slug)
+    public function show(string $id)
     {
-        $data = $this->data::where("slug", $slug)->first();
+        $data = $this->data::where("id", $id)->first();
         return response()->json([
             "msg"  => "success",
             "data" => $data,

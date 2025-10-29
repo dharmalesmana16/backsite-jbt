@@ -36,10 +36,13 @@ export default function Create({
 
     const editor = useRef(null);
     const configs = {
+
         readonly: false,
         height: 400,
-
+        defaultLineHeight:1.5,
         toolbarButtonSize: 'middle',
+                fontFamily:'Arial',
+
         buttons: ['bold', 'italic', 'underline', 'link', 'unlink', 'source', 'font'],
         uploader: {
             insertImageAsBase64URI: true,
@@ -59,10 +62,6 @@ export default function Create({
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         setLoading(true);
-        // console.log(data.nama)
-        // post(route('login'), {
-        //     onFinish: () => reset('stok'),
-        // });
         axios
             .post(
                 "/api/berita",

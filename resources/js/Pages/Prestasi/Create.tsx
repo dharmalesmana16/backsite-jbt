@@ -1,3 +1,5 @@
+// @ts-ignore
+// @ts-nocheck
 import Checkbox from "@/Components/Checkbox";
 import HeaderPage from "@/Components/HeaderPage";
 import InputError from "@/Components/InputError";
@@ -26,21 +28,22 @@ export default function Create({
     const [gambar, setGambar] = useState(null);
     const [previewImg, setPreview] = useState<any>(null);
     const [isLoading, setLoading] = useState(false);
+    const [errorInput, setError] = useState<any>({})
 
     const { data, setData, post, processing, errors, reset } = useForm({
         nama: "",
-        tanggal: "",
+        tanggal: new Date,
         file: "",
         deskripsi: "",
     });
 
     const handleDateChange = (date: any) => {
-        let newDateFormat = formatDate(date, "yyyy-MM-dd");
-        setData("tanggal", newDateFormat); // Update the state with the new date
+        setData("tanggal", new Date(date)); // Update the state with the new date
+
     };
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
+  setLoading(true);
         axios
             .post(
                 "/api/prestasi",
@@ -58,17 +61,33 @@ export default function Create({
                 }
             )
             .then(function (response) {
-                console.log(response);
+                // console.log(response);
                 Swal.fire({
                     title: "Sukses",
                     text: "Data Berhasil Dibuat !",
                     icon: "success",
                     timer: 2000,
                 });
+                  setLoading(false);
                 setTimeout(() => {
                     window.location.href = "/prestasi";
                 }, 1000);
-            });
+            }).catch(function (error) {
+                            Swal.fire({
+                                title: "Ada Yang Salah ",
+                                text: "Periksa Input Datanya !",
+                                icon: "error",
+                                showConfirmButton: true,
+                                // timer: 1500,
+                            })
+                            console.log(error.response.data)
+                            setError(error.response.data)
+                            setLoading(false)
+                            // console.log(error.response.data.id_principle[0])
+                            // console.log()
+                        }
+
+                        );;
     };
     function preview(e: any) {
         let dataImage = e.target.files[0];
@@ -86,13 +105,16 @@ export default function Create({
                     <div className="bg-white shadow-xl p-5 rounded-lg ">
                         <form onSubmit={submit}>
                             <div className="grid grid-cols-2">
+                                {/* Input Gambar */}
                                 <div className="mt-4  block p-4">
                                     <label htmlFor="firstImage">
                                         <p className="block text-sm text-gray-700 font-bold">
                                             Gambar Prestasi
                                         </p>
+                                        {errorInput.file && (<p className='mt-1 text-sm text-red-500 tracking-normal'>{errorInput.file[0]}</p>)}
+
                                         {previewImg == null ? (
-                                            <div className="p-20 border-2 border-gray-200 border-dashed cursor-pointer w-full h-[300px]">
+                                            <div className="p-20 border-2 border-gray-200 border-dashed cursor-pointer w-full h-[375px]">
                                                 <p className="text-gray-500 text-lg text-center mx-auto my-auto">
                                                     + Img
                                                 </p>
@@ -101,7 +123,7 @@ export default function Create({
                                             <img
                                                 src={previewImg}
                                                 style={{ objectFit: "fill" }}
-                                                className="w-[275px] h-[375px] mx-auto"
+                                                className="w-full h-[375px] mx-auto"
                                             />
                                         )}
                                     </label>
@@ -114,6 +136,7 @@ export default function Create({
                                         onChange={preview}
                                     />
                                 </div>
+                                {/* Input Nama */}
                                 <div className="">
                                     <div className="mt-4 block">
                                         <InputLabel
@@ -122,6 +145,7 @@ export default function Create({
                                             className="font-bold"
                                         />
                                         <NoteLabel value="Masukkan Nama Penghargaan / Prestasi" />
+                                        {errorInput.nama && (<p className='mt-1 text-sm text-red-500 tracking-normal'>{errorInput.nama[0]}</p>)}
 
                                         <TextInput
                                             id="nama"
@@ -142,12 +166,12 @@ export default function Create({
                                             className="mt-2"
                                         />
                                     </div>
-
+                                        {/* Input Tanggal */}
                                     <div className="mt-4 block">
                                         <div className="">
                                             <InputLabel
-                                                htmlFor="jabatan"
-                                                value="Tanggal Terima Penerimaan "
+                                                htmlFor="tanggal"
+                                                value="Tanggal Penerimaan "
                                                 className="font-bold"
                                             />
                                             <NoteLabel value="Masukkan Tanggal Penerimaan Penghargaan (Opsional)" />
@@ -166,7 +190,7 @@ export default function Create({
                                             />
                                         </div>
                                     </div>
-
+                                                {/* Input Deskripsi */}
                                     <div className="mt-4 block">
                                         <InputLabel
                                             htmlFor="nama"
@@ -176,12 +200,7 @@ export default function Create({
                                         <NoteLabel value="Masukkan Deskripsi (Opsional)" />
                                         <div className="w-full mb-4 border border-gray-200 rounded-lg bg-gray-50 ">
                                             <div className="px-2 py-2 bg-white rounded-b-lg ">
-                                                <label
-                                                    htmlFor="editor"
-                                                    className="sr-only"
-                                                >
-                                                    Publish post
-                                                </label>
+
                                                 <textarea
                                                     onChange={(e) =>
                                                         setData(
@@ -205,7 +224,7 @@ export default function Create({
 
                                     <div className="mt-4 flex items-center justify-end">
                                         <PrimaryButton
-                                            className="ms-4"
+                                            className="ms-4 bg-main"
                                             disabled={processing}
                                         >
                                             {

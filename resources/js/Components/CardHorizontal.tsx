@@ -18,8 +18,8 @@ export default function CardHorizontal({
         <>
             <div className="flex flex-col bg-white border p-2 border-gray-200 rounded-lg shadow-sm md:flex-row md:w-full hover:bg-gray-100 ">
                 <img
-                    className="object-cover w-full p-4 rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg"
-                    src={`/storage/image/report/${srcImage}`}
+                    className="w-full p-4 rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg"
+                    src={srcImage}
                     alt=""
                 />
                 <div className="flex flex-col leading-normal">
@@ -28,7 +28,7 @@ export default function CardHorizontal({
                             {nama ? nama : "Laporan / Penghargaan"}
                         </h5>
                         <p className="mb-2 text-md font-normal text-gray-700 ">
-                            Tahun : {tahun ? tahun : "2024"}{" "}
+                            Tahun : {tahun ? tahun : "2024"}
                         </p>
                         <p className="mb-2 text-md font-normal text-gray-700 ">
                             Ext : {ext ? ext : "JPG"}

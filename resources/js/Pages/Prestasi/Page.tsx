@@ -70,6 +70,13 @@ export default function Page() {
                                     slug={res.slug}
                                     nama={res.nama}
                                     size={res.size}
+                                    tahun= {res.tanggal != null
+                                ? new Date(
+                                      res.tanggal
+                                  ).toLocaleDateString("id-ID", {
+                                      year: "numeric",
+                                  })
+                                : "04 Oktober 2025"}
                                     ext={res.ext}
                                     srcImage={
                                         res.file
