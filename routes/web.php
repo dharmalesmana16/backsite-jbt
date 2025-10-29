@@ -13,6 +13,9 @@ use App\Models\ReportYearly;
 use App\Models\Saham;
 use App\Models\Staticcontent;
 use App\Models\Tarif;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -23,7 +26,21 @@ Route::get('/', function () {
     ];
     return Inertia::render('Dashboard', $data);
 })->middleware('checkAuth');
+Route::get('/testAuth', function (Request $request) {
+    // $stkb = new Inventaris();
 
+    // $user = new User();
+    // $user = $request->user(); // Get the authenticated user
+
+    // if ($user) {
+    //     $currentToken = $user->currentAccessToken();
+    // }
+    // $users = Auth::user();
+    // // $token = $users->tokens(;
+
+    return dd(Auth::user()->tokens->where("tokenable_id", "1")->first());
+    // dd(Auth::user());
+});
 // Route::get('/report', function () {
 //     return Inertia::render('Report/Page');
 // })->middleware('checkAuth');
@@ -156,7 +173,7 @@ Route::prefix("carousel")->middleware('checkAuth')->group(function () {
         //     "dataBerita" => $dataBerita::where("judul_static_content", "=", "informasi-berita")->first(),
         //     // "dataTender" => $dataBerita::where("judul_static_content", "=", "informasi-tender")->first()
         // ];
-        return Inertia::render('Carousel/Page' );
+        return Inertia::render('Carousel/Page');
     });
     Route::get('/update/{slug}', function ($slug) {
         $model = new Carousel();
@@ -175,10 +192,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 // Route::post( 'register', [AuthController::class, 'register']);
-Route::get('signup', [AuthController::class, 'pageRegister']);
-Route::post('signup', [AuthController::class, 'signup']);
-Route::get('signin', [AuthController::class, 'pageLogin']);
-Route::post('login', [AuthController::class, 'login']);
+Route::get('signup', [AuthController::class, 'pageRegister'])->middleware('redirectIfAuth');
+Route::post('signup',  [AuthController::class, 'signup']);
+Route::get('signin', [AuthController::class, 'pageLogin'])->middleware('redirectIfAuth');
+Route::post('signin', [AuthController::class, 'login']);
 Route::get('signout', [AuthController::class, 'logout']);
 
 // require __DIR__.'/auth.php';

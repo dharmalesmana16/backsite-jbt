@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -8,6 +9,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\File;
 
 class BeritaController extends Controller
 {
@@ -18,7 +20,7 @@ class BeritaController extends Controller
     }
     public function index(Request $request)
     {
-        $res = $this->data::all();
+        $res = $this->data::orderBy("id", 'desc')->get();
         if ($request->limit == "3") {
             $this->data::limit(3)->get();
         }
@@ -32,12 +34,20 @@ class BeritaController extends Controller
         $validator = Validator::make($request->all(), [
             'judul'   => 'required',
             'tanggal' => 'required',
-            'cover'   => 'mimes:jpg,jpeg',
+            'cover'   => [
+                'required',
+                // 'file',
+                // 'size:10000',
+                'mimes:jpg',
+                // File::image()
+            ],
             // 'content'   => 'required',
         ], [
             'judul.required'   => 'Nama Judul Harus diisi ya !',
             'tanggal.required' => 'Tanggal juga wajib diisi ya !',
+            // 'cover.required' => 'Cover Berita Harus diisi !',
             'cover.mimes'      => "Format yang diperbolehkan : jpg / jpeg",
+            'cover.size'        => "Size maksimum :5MB"
         ]);
 
         //check if validation fails
@@ -60,17 +70,10 @@ class BeritaController extends Controller
         if ($request->file('cover')) {
             $file     = $request->file('cover');
             $namaFile = Str::slug($nama) . "gambar-1" . "-" . time() . "." . $request->cover->getClientOriginalExtension();
-            // Storage::disk('public')->put($namaFile, file_get_contents($request->file));
             $file->storeAs('image/berita', $namaFile, 'public');
             $dataUpload["cover"] = $namaFile;
         }
-        if ($request->file('gambar_kedua')) {
-            $file     = $request->file('gambar_kedua');
-            $namaFile = Str::slug($nama) . "gambar-2" . "-" . time() . "." . $request->gambar_kedua->getClientOriginalExtension();
-            // Storage::disk('public')->put($namaFile, file_get_contents($request->file));
-            $file->storeAs('image/berita', $namaFile, 'public');
-            $dataUpload["gambar_kedua"] = $namaFile;
-        }
+
 
         $res = $this->data::create($dataUpload);
         if (! $res) {

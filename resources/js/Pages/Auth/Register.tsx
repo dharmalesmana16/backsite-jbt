@@ -1,39 +1,40 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import { Head, Link, useForm } from '@inertiajs/react';
-import axios from 'axios';
-import { FormEventHandler, useState } from 'react';
-import GuestLayout from '@/Layouts/GuestLayout';
+import InputError from "@/Components/InputError";
+import InputLabel from "@/Components/InputLabel";
+import PrimaryButton from "@/Components/PrimaryButton";
+import TextInput from "@/Components/TextInput";
+import AuthLayout from "@/Layouts/GuestLayout";
+import { Head, Link, useForm } from "@inertiajs/react";
+import axios from "axios";
+import { FormEventHandler, useState } from "react";
+
 export default function Register() {
     const [isSuccess, setSuccess] = useState(2);
     const [validation, setValidation] = useState("");
     const { data, setData, post, processing, errors, reset } = useForm({
-        username: '',
-        password: '',
+        username: "",
+        password: "",
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        axios.post('/signup', {
-            username: data.username,
-            password: data.password
-        }).then(function (res) {
-            console.log(res.data.code);
+        axios
+            .post("/signup", {
+                username: data.username,
+                password: data.password,
+            })
+            .then(function (res) {
+                console.log(res.data.code);
 
-            if (res.data.code == 0) {
-                  setSuccess(0)
-            }
-            setSuccess(1);
-            setValidation(res.data.msg)
-            setData("password", "")
-            setTimeout(() => {
-                window.location.href = '/signin';
-            }, 2000);
-
-
-        })
+                if (res.data.code == 0) {
+                    setSuccess(0);
+                }
+                setSuccess(1);
+                setValidation(res.data.msg);
+                setData("password", "");
+                setTimeout(() => {
+                    window.location.href = "/signin";
+                }, 2000);
+            });
         // post('/signup', {
         //     onSuccess: (res) => {
         //         console.log(res)
@@ -44,19 +45,24 @@ export default function Register() {
 
     return (
         <>
-            <GuestLayout>
-                {
-                    isSuccess == 0 ? (
-
-                        <div className=" p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
-                            Gagal Buat Akun, Hubungi Adminstrator
-                        </div>
-                    ) : isSuccess == 1 && (
-                        <div className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+            <AuthLayout>
+                {isSuccess == 0 ? (
+                    <div
+                        className=" p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                        role="alert"
+                    >
+                        Gagal Buat Akun, Hubungi Adminstrator
+                    </div>
+                ) : (
+                    isSuccess == 1 && (
+                        <div
+                            className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400"
+                            role="alert"
+                        >
                             {validation}
                         </div>
                     )
-                }
+                )}
 
                 <Head title="Register" />
 
@@ -71,14 +77,17 @@ export default function Register() {
                             className="mt-1 block w-full"
                             autoComplete="username"
                             isFocused={true}
-                            onChange={(e) => setData('username', e.target.value)}
+                            onChange={(e) =>
+                                setData("username", e.target.value)
+                            }
                             required
                         />
 
-                        <InputError message={errors.username} className="mt-2" />
+                        <InputError
+                            message={errors.username}
+                            className="mt-2"
+                        />
                     </div>
-
-
 
                     <div className="mt-4">
                         <InputLabel htmlFor="password" value="Password" />
@@ -90,13 +99,17 @@ export default function Register() {
                             value={data.password}
                             className="mt-1 block w-full"
                             autoComplete="new-password"
-                            onChange={(e) => setData('password', e.target.value)}
+                            onChange={(e) =>
+                                setData("password", e.target.value)
+                            }
                             required
                         />
 
-                        <InputError message={errors.password} className="mt-2" />
+                        <InputError
+                            message={errors.password}
+                            className="mt-2"
+                        />
                     </div>
-
 
                     <div className="mt-4 flex items-center justify-end">
                         {/* <Link
@@ -111,7 +124,7 @@ export default function Register() {
                         </PrimaryButton>
                     </div>
                 </form>
-            </GuestLayout>
+            </AuthLayout>
         </>
     );
 }
