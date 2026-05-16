@@ -32,7 +32,8 @@ export default function Create({
     const configs = {
         readonly: false,
         height: 400,
-
+        defaultLineHeight:1.5,
+        fontFamily:'Arial',
         // toolbarButtonSize: 'middle',
         buttons: ['bold', 'italic', 'underline', 'link', 'source', 'font'],
 
