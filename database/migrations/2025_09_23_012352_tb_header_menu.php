@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text("text_left")->nullable();
             $table->text("text_right")->nullable();
             $table->string("bg_color")->nullable();
-            $table->foreignId("menu_id")->constrained()->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId("menu_id")->references('id')->on('tb_menu')->onUpdate('cascade')->onDelete('cascade');
 
             $table->timestampsTz();
         });
