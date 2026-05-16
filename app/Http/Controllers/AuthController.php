@@ -14,25 +14,25 @@ class AuthController extends Controller
     {
         try {
 
-            $username = $request->username;
+            $name = $request->name;
             $password = $request->password;
-            $userData = User::where("username", $username)->first();
+            $userData = User::where("name", $name)->first();
 
             // if (! Hash::check($password, $userData->password)) {
             //     return response()->json([
             //         "code"   => 0,
             //         "status" => "Login Gagal",
-            //         "msg"    => "Username atau password salah !",
+            //         "msg"    => "name atau password salah !",
             //     ], 400);
             // }
-            if (Auth::attempt(['username' => $username, 'password' => $password])) {
-                $generateToken = $userData->createToken($username)->plainTextToken;
+            if (Auth::attempt(['name' => $name, 'password' => $password])) {
+                $generateToken = $userData->createToken($name)->plainTextToken;
                 return response()->json([
                     "code"   => 10,
                     "status" => 200,
                     "msg"    => "Login Berhasils",
                     "token"  => $generateToken,
-                    "username" => $username,
+                    "name" => $name,
                     "token_id" => Auth::user()->tokens->where("tokenable_id", $userData->id)->first(),
                     // "token_id" => Auth::user(),
                 ], 201);
@@ -40,7 +40,7 @@ class AuthController extends Controller
             return response()->json([
                 "code"   => 0,
                 "status" => "Login Gagal",
-                "msg"    => "Username atau password salahs !",
+                "msg"    => "Username atau password salah !",
             ], 404);
         } catch (\Exception $e) {
             // if (Auth::attempt(['username' => $username, 'password' => $password])) {
